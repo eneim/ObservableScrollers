@@ -7,7 +7,7 @@ Easy to use observable scroller.
 Include in build.gradle
 
 ```
-compile(group: 'im.ene', name: 'observablescrollers', version: '0.0.1', ext: 'aar')
+compile 'im.ene:observablescrollers:0.0.1@aar'
 ```
 
 # License
