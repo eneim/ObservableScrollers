@@ -1,4 +1,4 @@
-# ObervableScrollers
+# ObservableScrollers
 
 Easy to use observable scroller.
 
