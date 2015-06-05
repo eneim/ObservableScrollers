@@ -1,6 +1,14 @@
 # ObservableScrollers
 
+ [ ![Download](https://api.bintray.com/packages/eneim/maven/observable-scrollers/images/download.svg) ](https://bintray.com/eneim/maven/observable-scrollers/_latestVersion)
+ 
 Easy to use observable scroller.
+
+Include in build.gradle
+
+```
+compile 'im.ene:observablescrollers:0.0.1@aar'
+```
 
 # License
 
