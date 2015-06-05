@@ -1,9 +1,11 @@
-package im.ene.lab.obervablescrollers.sample;
+package im.ene.lab.obervablescrollers.sample.ui;
 
 import android.os.Bundle;
 import android.support.v4.view.ViewCompat;
 import android.view.View;
 
+import im.ene.lab.obervablescrollers.sample.BaseActivity;
+import im.ene.lab.obervablescrollers.sample.R;
 import im.ene.lab.observablescrollers.lib.util.LogHelper;
 import im.ene.lab.observablescrollers.lib.util.OnScrollObservedListener;
 import im.ene.lab.observablescrollers.lib.util.Scrollable;

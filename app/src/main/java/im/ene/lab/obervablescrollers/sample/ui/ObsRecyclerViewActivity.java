@@ -1,4 +1,4 @@
-package im.ene.lab.obervablescrollers.sample;
+package im.ene.lab.obervablescrollers.sample.ui;
 
 import android.os.Bundle;
 import android.support.v4.view.ViewCompat;
@@ -8,8 +8,9 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 
+import im.ene.lab.obervablescrollers.sample.BaseActivity;
+import im.ene.lab.obervablescrollers.sample.R;
 import im.ene.lab.obervablescrollers.sample.adapter.DummyRecyclerAdapter;
-import im.ene.lab.obervablescrollers.sample.widget.DividerItemDecoration;
 import im.ene.lab.observablescrollers.lib.util.LogHelper;
 import im.ene.lab.observablescrollers.lib.util.OnScrollObservedListener;
 import im.ene.lab.observablescrollers.lib.util.Scrollable;
@@ -38,7 +39,7 @@ public class ObsRecyclerViewActivity extends BaseActivity {
         mRecyclerView.setLayoutManager(mLayoutManager);
         mRecyclerView.setItemAnimator(new DefaultItemAnimator());
         mRecyclerView.setHasFixedSize(true);    // for better performance
-        mRecyclerView.addItemDecoration(new DividerItemDecoration(this, DividerItemDecoration.VERTICAL_LIST));
+//        mRecyclerView.addItemDecoration(new DividerItemDecoration(this, DividerItemDecoration.VERTICAL_LIST));
         mRecyclerView.setAdapter(new DummyRecyclerAdapter());
 
         mRecyclerView.setOnScrollObservedListener(new OnScrollObservedListener() {

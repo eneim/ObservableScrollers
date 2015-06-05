@@ -1,4 +1,7 @@
 apply plugin: 'com.android.library'
+apply plugin: 'com.github.dcendents.android-maven'
+apply plugin: 'com.jfrog.bintray'
+apply plugin: 'license'
 
 android {
     compileSdkVersion 22
@@ -20,6 +23,100 @@ android {
 
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
-    compile 'com.android.support:appcompat-v7:22.1.1'
-    compile 'com.android.support:recyclerview-v7:22.1.1'
+    compile 'com.android.support:appcompat-v7:22.2.0'
+    compile 'com.android.support:recyclerview-v7:22.2.0'
+}
+
+license {
+
+    sourceSets {
+        main.java.srcDirs = android.sourceSets.main.java.srcDirs
+        main.resources.srcDirs = android.sourceSets.main.resources.srcDirs
+    }
+
+    ext.year = Calendar.getInstance().get(Calendar.YEAR)
+    ext.name = DEVELOPER_ID
+}
+
+install {
+    repositories.mavenInstaller {
+        // This generates POM.xml with proper parameters
+        pom {
+            project {
+                packaging 'aar'
+
+                name ARTIFACT_NAME
+                description ARTIFACT_DESCRIPTION
+                url SITE_URL
+
+                licenses {
+                    license {
+                        name LICENCE_NAME
+                        url LICENCE_URL
+                    }
+                }
+
+                developers {
+                    developer {
+                        id DEVELOPER_ID
+                        name DEVELOPER_NAME
+                        email DEVELOPER_EMAIL
+                    }
+                }
+
+//                issueManagement {
+//                    system ISSUE_SYSTEM
+//                    url ISSUE_URL
+//                }
+
+                scm {
+                    connection GIT_URL
+                    developerConnection GIT_URL
+                    url SITE_URL
+
+                }
+            }
+        }
+    }
+}
+
+task sourcesJar(type: Jar) {
+    from android.sourceSets.main.java.srcDirs
+    classifier = 'sources'
+}
+
+task javadoc(type: Javadoc) {
+    source = android.sourceSets.main.java.srcDirs
+    classpath += project.files(android.getBootClasspath().join(File.pathSeparator))
+}
+
+task javadocJar(type: Jar, dependsOn: javadoc) {
+    classifier = 'javadoc'
+    from javadoc.destinationDir
+}
+artifacts {
+    archives javadocJar
+    archives sourcesJar
+}
+
+bintray {
+    user = bintray_user
+    key = bintray_api_key
+
+    configurations = ['archives'] //When uploading configuration files
+
+    dryRun = false
+    publish = true
+
+    pkg {
+        repo = 'maven'
+        name = ARTIFACT_NAME
+        desc = ARTIFACT_DESCRIPTION
+        websiteUrl = SITE_URL
+//        issueTrackerUrl = 'https://github.com/sys1yagi/toaster/issues'
+        vcsUrl = GIT_URL
+        licenses = ['Apache-2.0']
+        labels = ['android']
+        publicDownloadNumbers = true
+    }
 }
