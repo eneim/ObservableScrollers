@@ -30,9 +30,9 @@ public class ObsScrollView extends ScrollView implements Scrollable {
 
     private OnScrollObservedListener mScrollListener;
 
-    private OnScrollObservedListener.ScrollState mLastScrollState = OnScrollObservedListener.ScrollState.SCROLL_STATE_IDLE;
+    private ScrollState mLastScrollState = ScrollState.SCROLL_STATE_IDLE;
 
-    private OnScrollObservedListener.ScrollState mExpectedScrollSate = OnScrollObservedListener.ScrollState.SCROLL_STATE_IDLE;
+    private ScrollState mExpectedScrollSate = ScrollState.SCROLL_STATE_IDLE;
 
     /**
      * if user is touching to this view or not, set in ObsScrollView#onTouchEvent(MotionEvent ev);
@@ -60,7 +60,7 @@ public class ObsScrollView extends ScrollView implements Scrollable {
         this.mScrollListener = listener;
     }
 
-    void reportScrollStateChange(OnScrollObservedListener.ScrollState newState) {
+    void reportScrollStateChange(ScrollState newState) {
         if (newState != mLastScrollState) {
             mLastScrollState = newState;
             if (mScrollListener != null) {
@@ -102,7 +102,7 @@ public class ObsScrollView extends ScrollView implements Scrollable {
     protected void onScrollChanged(int l, int t, int old_l, int old_t) {
         mCurrentScrollY = t;
         diffY = t - old_t;
-        if (mLastScrollState != OnScrollObservedListener.ScrollState.SCROLL_STATE_IDLE)
+        if (mLastScrollState != ScrollState.SCROLL_STATE_IDLE)
             if (this.mScrollListener != null)
                 this.mScrollListener.onScrollChanged(this, l - old_l, t - old_t);
 
@@ -114,23 +114,23 @@ public class ObsScrollView extends ScrollView implements Scrollable {
         switch (mLastMotionEvent) {
             case MotionEvent.ACTION_MOVE:
                 if (isTouching)
-                    mExpectedScrollSate = OnScrollObservedListener.ScrollState.SCROLL_STATE_TOUCH_SCROLL;
+                    mExpectedScrollSate = ScrollState.SCROLL_STATE_TOUCH_SCROLL;
                 break;
             case MotionEvent.ACTION_UP:
-                mExpectedScrollSate = OnScrollObservedListener.ScrollState.SCROLL_STATE_FLING;
+                mExpectedScrollSate = ScrollState.SCROLL_STATE_FLING;
                 break;
             default:
                 break;
         }
 
-        if (mExpectedScrollSate == OnScrollObservedListener.ScrollState.SCROLL_STATE_TOUCH_SCROLL) {
+        if (mExpectedScrollSate == ScrollState.SCROLL_STATE_TOUCH_SCROLL) {
             if (diffY < -2) {
-                mExpectedScrollSate = OnScrollObservedListener.ScrollState.SCROLL_STATE_NEGATIVE;
+                mExpectedScrollSate = ScrollState.SCROLL_STATE_NEGATIVE;
             } else if (diffY > 2)
-                mExpectedScrollSate = OnScrollObservedListener.ScrollState.SCROLL_STATE_POSITIVE;
+                mExpectedScrollSate = ScrollState.SCROLL_STATE_POSITIVE;
         } else {
             if (diffY * diffY <= 4) {
-                mExpectedScrollSate = OnScrollObservedListener.ScrollState.SCROLL_STATE_IDLE;
+                mExpectedScrollSate = ScrollState.SCROLL_STATE_IDLE;
             }
         }
     }
@@ -141,7 +141,7 @@ public class ObsScrollView extends ScrollView implements Scrollable {
 
         if (clampedY) {
             if (mTouchRunnable != null) removeCallbacks(mTouchRunnable);
-            mExpectedScrollSate = OnScrollObservedListener.ScrollState.SCROLL_STATE_IDLE;
+            mExpectedScrollSate = ScrollState.SCROLL_STATE_IDLE;
             reportScrollStateChange(mExpectedScrollSate);
         }
     }

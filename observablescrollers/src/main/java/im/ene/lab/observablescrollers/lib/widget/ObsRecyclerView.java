@@ -34,9 +34,9 @@ public class ObsRecyclerView extends RecyclerView implements Scrollable {
 
     private OnScrollObservedListener mScrollListener;
 
-    private OnScrollObservedListener.ScrollState mLastScrollState = OnScrollObservedListener.ScrollState.SCROLL_STATE_IDLE;
+    private ScrollState mLastScrollState = ScrollState.SCROLL_STATE_IDLE;
 
-    private OnScrollObservedListener.ScrollState mExpectedScrollSate = OnScrollObservedListener.ScrollState.SCROLL_STATE_IDLE;
+    private ScrollState mExpectedScrollSate = ScrollState.SCROLL_STATE_IDLE;
 
     public void setOnScrollObservedListener(OnScrollObservedListener listener) {
         this.mScrollListener = listener;
@@ -57,7 +57,7 @@ public class ObsRecyclerView extends RecyclerView implements Scrollable {
     public void onScrolled(int dx, int dy) {
         super.onScrolled(dx, dy);
         diffY = dy;
-        if (mLastScrollState != OnScrollObservedListener.ScrollState.SCROLL_STATE_IDLE)
+        if (mLastScrollState != ScrollState.SCROLL_STATE_IDLE)
             if (this.mScrollListener != null)
                 this.mScrollListener.onScrollChanged(this, dx, dy);
 
@@ -69,29 +69,29 @@ public class ObsRecyclerView extends RecyclerView implements Scrollable {
         super.onScrollStateChanged(state);
         switch (state) {
             case SCROLL_STATE_IDLE:
-                mExpectedScrollSate = OnScrollObservedListener.ScrollState.SCROLL_STATE_IDLE;
+                mExpectedScrollSate = ScrollState.SCROLL_STATE_IDLE;
                 break;
             case SCROLL_STATE_DRAGGING:
-                mExpectedScrollSate = OnScrollObservedListener.ScrollState.SCROLL_STATE_TOUCH_SCROLL;
+                mExpectedScrollSate = ScrollState.SCROLL_STATE_TOUCH_SCROLL;
                 break;
             case SCROLL_STATE_SETTLING:
-                mExpectedScrollSate = OnScrollObservedListener.ScrollState.SCROLL_STATE_FLING;
+                mExpectedScrollSate = ScrollState.SCROLL_STATE_FLING;
                 break;
             default:
                 break;
         }
 
-        if (mExpectedScrollSate != OnScrollObservedListener.ScrollState.SCROLL_STATE_IDLE) {
+        if (mExpectedScrollSate != ScrollState.SCROLL_STATE_IDLE) {
             if (diffY < 0) {
-                mExpectedScrollSate = OnScrollObservedListener.ScrollState.SCROLL_STATE_NEGATIVE;
+                mExpectedScrollSate = ScrollState.SCROLL_STATE_NEGATIVE;
             } else
-                mExpectedScrollSate = OnScrollObservedListener.ScrollState.SCROLL_STATE_POSITIVE;
+                mExpectedScrollSate = ScrollState.SCROLL_STATE_POSITIVE;
         }
 
         reportScrollStateChange(mExpectedScrollSate);
     }
 
-    void reportScrollStateChange(OnScrollObservedListener.ScrollState newState) {
+    void reportScrollStateChange(ScrollState newState) {
         if (newState != mLastScrollState) {
             mLastScrollState = newState;
             if (mScrollListener != null) {

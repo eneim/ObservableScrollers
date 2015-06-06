@@ -44,7 +44,7 @@ public class ObsScrollViewActivity extends BaseActivity {
             }
 
             @Override
-            public void onScrollStateChanged(View scroller, ScrollState newState) {
+            public void onScrollStateChanged(View scroller, Scrollable.ScrollState newState) {
                 if (!(scroller instanceof Scrollable))
                     throw new IllegalArgumentException("This scrollview must implement Scrollable");
 
@@ -53,7 +53,7 @@ public class ObsScrollViewActivity extends BaseActivity {
                 if (isToolbarFullyHiddenOrShown())
                     return;
 
-                if (newState == ScrollState.SCROLL_STATE_IDLE) {
+                if (newState == Scrollable.ScrollState.SCROLL_STATE_IDLE) {
                     if (scrollable.getVerticalScrollOffset() > getMaxTranslationYRange()) {
                         hideToolbar();
                     } else {

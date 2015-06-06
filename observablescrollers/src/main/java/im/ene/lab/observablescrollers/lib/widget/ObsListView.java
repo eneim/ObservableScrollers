@@ -7,6 +7,7 @@ import android.util.AttributeSet;
 import android.widget.AbsListView;
 import android.widget.ListView;
 
+import im.ene.lab.observablescrollers.lib.util.ListViewScrollTracker;
 import im.ene.lab.observablescrollers.lib.util.LogHelper;
 import im.ene.lab.observablescrollers.lib.util.OnScrollObservedListener;
 import im.ene.lab.observablescrollers.lib.util.Scrollable;
@@ -35,7 +36,13 @@ public class ObsListView extends ListView implements Scrollable {
         super(context, attrs, defStyleAttr, defStyleRes);
     }
 
+    private ListViewScrollTracker mScrollTracker;
+
     private OnScrollObservedListener mScrollListener;
+
+    private ScrollState mLastScrollState = ScrollState.SCROLL_STATE_IDLE;
+
+    private ScrollState mExpectedScrollSate = ScrollState.SCROLL_STATE_IDLE;
 
     public void setOnScrollObservedListener(OnScrollObservedListener listener) {
         this.mScrollListener = listener;
@@ -43,44 +50,70 @@ public class ObsListView extends ListView implements Scrollable {
 
     private int mLastScrollY;
 
+    private int diffY;
+
     @Override
     protected void onAttachedToWindow() {
         super.onAttachedToWindow();
+        mScrollTracker = new ListViewScrollTracker(this);
         setOnScrollListener(new OnScrollListener() {
             @Override
             public void onScrollStateChanged(AbsListView view, int scrollState) {
                 switch (scrollState) {
                     case SCROLL_STATE_IDLE:
-                        LogHelper.d(TAG, "OnScrollListener#onScrollStateChanged(): " + "idle");
+                        mExpectedScrollSate = ScrollState.SCROLL_STATE_IDLE;
                         break;
                     case SCROLL_STATE_FLING:
-                        LogHelper.d(TAG, "OnScrollListener#onScrollStateChanged(): " + "fling");
+                        mExpectedScrollSate = ScrollState.SCROLL_STATE_FLING;
                         break;
                     case SCROLL_STATE_TOUCH_SCROLL:
-                        LogHelper.d(TAG, "OnScrollListener#onScrollStateChanged(): " + "touch scrolling");
+                        mExpectedScrollSate = ScrollState.SCROLL_STATE_TOUCH_SCROLL;
                         break;
                 }
-                LogHelper.d(TAG, "first child top: " + view.getChildAt(0).getTop());
+
+                if (mExpectedScrollSate != ScrollState.SCROLL_STATE_IDLE) {
+                    if (diffY < 0) {
+                        mExpectedScrollSate = ScrollState.SCROLL_STATE_NEGATIVE;
+                    } else
+                        mExpectedScrollSate = ScrollState.SCROLL_STATE_POSITIVE;
+                }
+
+                reportScrollStateChange(mExpectedScrollSate);
             }
 
             @Override
             public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
-//                LogHelper.d(TAG, "OnScrollListener#onScroll(): " + getVerticalScrollOffset());
-                if (mScrollListener != null)
-                    mScrollListener.onScrollChanged(ObsListView.this, 0, ObsListView.super.computeVerticalScrollExtent());    // TODO
+                int scrollOffset = -mScrollTracker.calculateIncrementalOffset(firstVisibleItem, visibleItemCount);
+//                int scrollOffsetOfficial = ObsListView.super.computeVerticalScrollOffset();
+//                mLastScrollY += scrollOffset;
+
+                diffY = scrollOffset;
+//                LogHelper.d(TAG, "diffY: " + (ObsListView.super.computeVerticalScrollRange() - view.getHeight()));
+                if (mLastScrollState != ScrollState.SCROLL_STATE_IDLE)
+                    if (mScrollListener != null)
+                        mScrollListener.onScrollChanged(ObsListView.this, 0, diffY);
+                mLastScrollY += scrollOffset;
+                LogHelper.d(TAG, "last scroll: " + mLastScrollY);
             }
         });
     }
 
-    @Override
-    protected void onScrollChanged(int l, int t, int oldl, int oldt) {
-        super.onScrollChanged(l, t, oldl, oldt);
-//        LogHelper.d(TAG, "View#onScrollChanged(): " + ObsListView.super.computeVerticalScrollExtent());
+    void reportScrollStateChange(ScrollState newState) {
+        if (newState != mLastScrollState) {
+            mLastScrollState = newState;
+            if (mScrollListener != null) {
+                mScrollListener.onScrollStateChanged(this, newState);
+            }
+            LogHelper.d(TAG, "last scroll state: " + mLastScrollState.getState());
+        }
     }
 
     @Override
     protected void onDetachedFromWindow() {
         setOnScrollListener(null);
+        if (mScrollTracker != null)
+            mScrollTracker.clear();
+        mScrollTracker = null;
         super.onDetachedFromWindow();
     }
 
