@@ -4,7 +4,6 @@ import android.os.Bundle;
 import android.support.v4.view.ViewCompat;
 import android.view.View;
 
-import im.ene.lab.obervablescrollers.sample.BaseActivity;
 import im.ene.lab.obervablescrollers.sample.R;
 import im.ene.lab.observablescrollers.lib.util.LogHelper;
 import im.ene.lab.observablescrollers.lib.util.OnScrollObservedListener;
@@ -36,8 +35,12 @@ public class ObsScrollViewActivity extends BaseActivity {
                 int maxTransY = 0;
                 int minTransY = -getMaxTranslationYRange();
 
-                ViewCompat.setTranslationY(getActionbarToolbar(),
-                        Math.min(maxTransY, Math.max(minTransY, currTransY - dy)));
+                int transition = Math.min(maxTransY, Math.max(minTransY, currTransY - dy));
+
+                LogHelper.d(TAG, "currTransY: " + currTransY + ", actionbar: " + transition +
+                        ", scrollview: " + (-mScrollView.getVerticalScrollOffset()));
+
+                ViewCompat.setTranslationY(getActionbarToolbar(), transition);
             }
 
             @Override
@@ -51,7 +54,7 @@ public class ObsScrollViewActivity extends BaseActivity {
                     return;
 
                 if (newState == ScrollState.SCROLL_STATE_IDLE) {
-                    if (scrollable.getCurrentScrollY() > getMaxTranslationYRange()) {
+                    if (scrollable.getVerticalScrollOffset() > getMaxTranslationYRange()) {
                         hideToolbar();
                     } else {
                         showToolbar();

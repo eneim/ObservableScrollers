@@ -10,11 +10,11 @@ import im.ene.lab.obervablescrollers.sample.R;
 /**
  * Created by eneim on 3/26/15.
  */
-public class DummyRecyclerAdapter extends RecyclerView.Adapter {
+public class DummyRecyclerViewAdapter extends RecyclerView.Adapter {
 
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup viewGroup, int i) {
-        View vh = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.recycler_card_item, viewGroup, false);
+        View vh = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.card_item, viewGroup, false);
         return new RecyclerView.ViewHolder(vh) {
         };
     }

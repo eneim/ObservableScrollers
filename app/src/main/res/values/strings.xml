@@ -12,4 +12,5 @@ Quam libero nulla netus eu porta curae, ut nulla bibendum facilisis et urna sed,
     <string name="lipsum_short">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam cursus sem et ante rhoncus pharetra. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Curabitur lacinia mattis quam, non laoreet felis vestibulum ac. Curabitur pharetra vel est quis cursus. Etiam faucibus turpis in nunc semper sollicitudin. Nam fermentum commodo ligula. Aliquam a tellus sollicitudin, ultricies est ac, porta ante. Nam aliquet mi nulla, ut laoreet nunc vestibulum ut. Quisque non purus urna. Aliquam sed porta lectus. In a ipsum varius, imperdiet magna in, hendrerit arcu. Donec porta, nulla non viverra sollicitudin, nisl mi suscipit nisl, nec pellentesque est mi ut neque. Duis viverra laoreet nibh at malesuada.</string>
     <string name="title_activity_obs_recycler_view">ObsRecyclerViewActivity</string>
     <string name="title_activity_main">MainActivity</string>
+    <string name="title_activity_obs_list_view">ObsListViewActivity</string>
 </resources>

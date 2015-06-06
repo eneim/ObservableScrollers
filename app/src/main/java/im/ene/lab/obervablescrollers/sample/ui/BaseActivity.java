@@ -1,4 +1,4 @@
-package im.ene.lab.obervablescrollers.sample;
+package im.ene.lab.obervablescrollers.sample.ui;
 
 import android.animation.ValueAnimator;
 import android.os.Bundle;
@@ -6,6 +6,7 @@ import android.support.v4.view.ViewCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 
+import im.ene.lab.obervablescrollers.sample.R;
 import im.ene.lab.observablescrollers.lib.util.LogHelper;
 
 /**
@@ -21,10 +22,13 @@ public class BaseActivity extends AppCompatActivity {
 
     protected Toolbar mToolbar;
 
+    protected int mToolbarHeight;
+
     protected Toolbar getActionbarToolbar() {
         if (mToolbar == null) {
             mToolbar = (Toolbar) findViewById(R.id.toolbar);
             setSupportActionBar(mToolbar);
+            mToolbarHeight = mToolbar.getLayoutParams().height;
         }
 
         return mToolbar;
@@ -56,7 +60,7 @@ public class BaseActivity extends AppCompatActivity {
     }
 
     protected int getMaxTranslationYRange() {
-        return mToolbar == null ? 0 : mToolbar.getHeight();
+        return mToolbarHeight;
     }
 
     protected boolean isToolbarFullyHiddenOrShown() {

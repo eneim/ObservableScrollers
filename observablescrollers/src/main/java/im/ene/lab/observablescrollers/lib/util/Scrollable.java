@@ -9,13 +9,13 @@ public interface Scrollable {
      *
      * @return
      */
-    public int getCurrentScrollX();
+    public int getHorizontalScrollOffset();
 
     /**
      *
      * @return
      */
-    public int getCurrentScrollY();
+    public int getVerticalScrollOffset();
 
     /**
      *

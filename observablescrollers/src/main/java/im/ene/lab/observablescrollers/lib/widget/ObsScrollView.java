@@ -18,6 +18,8 @@ public class ObsScrollView extends ScrollView implements Scrollable {
 
     private static final String TAG = LogHelper.createLogTag(ObsScrollView.class);
 
+    private int mCurrentScrollY;
+
     private int diffY;
 
     private int mLastMotionEvent = -1;
@@ -98,6 +100,7 @@ public class ObsScrollView extends ScrollView implements Scrollable {
 
     @Override
     protected void onScrollChanged(int l, int t, int old_l, int old_t) {
+        mCurrentScrollY = t;
         diffY = t - old_t;
         if (mLastScrollState != OnScrollObservedListener.ScrollState.SCROLL_STATE_IDLE)
             if (this.mScrollListener != null)
@@ -154,12 +157,12 @@ public class ObsScrollView extends ScrollView implements Scrollable {
     }
 
     @Override
-    public int getCurrentScrollX() {
+    public int getHorizontalScrollOffset() {
         return getScrollX();
     }
 
     @Override
-    public int getCurrentScrollY() {
+    public int getVerticalScrollOffset() {
         return getScrollY();
     }
 

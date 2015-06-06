@@ -112,12 +112,12 @@ public class ObsRecyclerView extends RecyclerView implements Scrollable {
     }
 
     @Override
-    public int getCurrentScrollX() {
+    public int getHorizontalScrollOffset() {
         return super.computeHorizontalScrollOffset();
     }
 
     @Override
-    public int getCurrentScrollY() {
+    public int getVerticalScrollOffset() {
         return super.computeVerticalScrollOffset();
     }
 

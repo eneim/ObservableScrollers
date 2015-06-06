@@ -1,0 +1,17 @@
+<merge>
+
+    <im.ene.lab.observablescrollers.lib.widget.ObsListView xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/listview"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:choiceMode="singleChoice"
+        android:clipToPadding="false"
+        android:divider="@drawable/divider_linearlayout_vertical_16dp"
+        android:listSelector="?attr/selectableItemBackground"
+        android:paddingLeft="@dimen/activity_vertical_margin"
+        android:scrollbars="none"
+        android:paddingRight="@dimen/activity_vertical_margin"
+        android:paddingTop="@dimen/activity_vertical_margin" />
+
+    <include layout="@layout/toolbar" />
+</merge>
