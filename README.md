@@ -2,6 +2,8 @@
 
  [ ![Download](https://api.bintray.com/packages/eneim/maven/observable-scrollers/images/download.svg) ](https://bintray.com/eneim/maven/observable-scrollers/_latestVersion)
  
+ [![Coverage Status](https://coveralls.io/repos/eneim/ObservableScrollers/badge.svg)](https://coveralls.io/r/eneim/ObservableScrollers)
+ 
 Easy to use observable scroller.
 
 Include in build.gradle
