@@ -25,7 +25,9 @@ public class ListViewScrollTracker {
      */
     public int calculateIncrementalOffset(final int firstVisiblePosition, final int visibleItemCount) {
         // Remember previous positions, if any
-        SparseIntArray previousPositions = mPositions.clone();
+        SparseIntArray previousPositions = null;
+        if (mPositions != null)
+            previousPositions = mPositions.clone();
 
         // Store new positions
         mPositions = new SparseIntArray();
@@ -41,11 +43,12 @@ public class ListViewScrollTracker {
             // of the new and old Y values.
             for (int i = 0; i < previousPositions.size(); i++) {
                 int position = previousPositions.keyAt(i);
+                if (firstVisiblePosition != position)
+                    continue;
+
                 int previousTop = previousPositions.get(position);
                 Integer newTop = mPositions.get(position);
-                if (newTop != null) {
-                    return newTop - previousTop;
-                }
+                return newTop - previousTop;
             }
         }
 
