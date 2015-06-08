@@ -1,6 +1,7 @@
 package im.ene.lab.obervablescrollers.sample.adapter;
 
 import android.content.Context;
+import android.util.SparseArray;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -25,7 +26,7 @@ public class DummyListViewAdapter extends BaseAdapter {
 
     @Override
     public int getCount() {
-        return 20;
+        return 50;
     }
 
     @Override
@@ -40,17 +41,35 @@ public class DummyListViewAdapter extends BaseAdapter {
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-        if (convertView != null)
-            return convertView;
-        convertView = LayoutInflater.from(mContext).inflate(R.layout.card_item, parent, false);
-        TextView mText;
-        if ((mText = (TextView) convertView.findViewById(R.id.text)) != null)
-            mText.setText(getRandomStringId(dummytStrings.length));
+        if (convertView == null)
+            convertView = LayoutInflater.from(mContext).inflate(R.layout.card_item, parent, false);
+
+        TextView mText = ViewHolder.get(convertView, R.id.text);
+        mText.setText(getRandomStringId(dummytStrings.length, position));
         return convertView;
     }
 
-    private int getRandomStringId(int max) {
+    private String getRandomStringId(int max, int position) {
         int seed = (int) (Math.random() * max);
-        return dummytStrings[seed];
+        return position + " - " + mContext.getString(dummytStrings[seed]);
+    }
+
+    public static class ViewHolder {
+
+        @SuppressWarnings("unchecked")
+        public static <T extends View> T get(View view, int id) {
+            SparseArray<View> viewHolder = (SparseArray<View>) view.getTag();
+            if (viewHolder == null) {
+                viewHolder = new SparseArray<View>();
+                view.setTag(viewHolder);
+            }
+            View childView = viewHolder.get(id);
+            if (childView == null) {
+                childView = view.findViewById(id);
+                viewHolder.put(id, childView);
+            }
+            return (T) childView;
+        }
+
     }
 }

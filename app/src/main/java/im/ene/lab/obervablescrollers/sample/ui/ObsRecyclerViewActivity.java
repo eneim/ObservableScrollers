@@ -60,6 +60,7 @@ public class ObsRecyclerViewActivity extends BaseActivity {
                     return;
 
                 if (newState == Scrollable.ScrollState.SCROLL_STATE_IDLE) {
+                    LogHelper.d(TAG, scrollable.getVerticalScrollOffset() + "");
                     if (scrollable.getVerticalScrollOffset() > getMaxTranslationYRange()) {
                         hideToolbar();
                     } else {

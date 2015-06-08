@@ -55,6 +55,31 @@ public class ListViewScrollTracker {
         return 0; // No view's position was in both previousPositions and mPositions
     }
 
+    private SparseIntArray mChildHeights = new SparseIntArray();
+
+    public int getVerticalScroll(int firstVisibleItem, int visibleItemCount) {
+        if (mListView == null || mListView.getChildAt(0) == null || firstVisibleItem < 0)
+            return 0;
+
+        if (firstVisibleItem == 0)
+            return mListView.getPaddingTop() - mListView.getChildAt(0).getTop();
+
+        for (int i = 0; i < visibleItemCount; i++) {
+            if (mChildHeights.indexOfKey(firstVisibleItem + i) < 0 && mListView.getChildAt(i) != null)
+                mChildHeights.put(firstVisibleItem + i, mListView.getChildAt(i).getHeight());
+        }
+
+        int totalChildHeight = 0;
+        int maxIndex = mChildHeights.size() > firstVisibleItem ? firstVisibleItem : mChildHeights.size();
+
+        for (int i = 0; i < maxIndex; i++) {
+            int key = mChildHeights.keyAt(i);
+            totalChildHeight += mChildHeights.get(key);
+        }
+
+        return totalChildHeight - mListView.getChildAt(0).getTop() + mListView.getPaddingTop();
+    }
+
     public void clear() {
         mPositions = null;
     }
