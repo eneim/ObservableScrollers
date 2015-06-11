@@ -56,18 +56,24 @@ public class ObsScrollView extends ScrollView implements Scrollable {
         super(context, attrs, defStyleAttr, defStyleRes);
     }
 
+    /**
+     *
+     * @param listener
+     */
     public void setOnScrollObservedListener(OnScrollObservedListener listener) {
         this.mScrollListener = listener;
     }
 
+    /**
+     *
+     * @param newState
+     */
     void reportScrollStateChange(ScrollState newState) {
         if (newState != mLastScrollState) {
             mLastScrollState = newState;
             if (mScrollListener != null) {
                 mScrollListener.onScrollStateChanged(this, newState);
             }
-
-            LogHelper.d(TAG, "last scroll state: " + mLastScrollState.getState());
         }
     }
 
@@ -100,14 +106,12 @@ public class ObsScrollView extends ScrollView implements Scrollable {
 
     @Override
     protected void onScrollChanged(int l, int t, int old_l, int old_t) {
+        super.onScrollChanged(l, t, old_l, old_t);
         mCurrentScrollY = t;
         diffY = t - old_t;
         if (mLastScrollState != ScrollState.SCROLL_STATE_IDLE)
             if (this.mScrollListener != null)
-                this.mScrollListener.onScrollChanged(this, l - old_l, t - old_t);
-
-        LogHelper.d(TAG, "current scroll y: " + diffY);
-        super.onScrollChanged(l, t, old_l, old_t);
+                this.mScrollListener.onScrollChanged(this, l - old_l, diffY);
     }
 
     private void updateScrollState() {
@@ -138,7 +142,6 @@ public class ObsScrollView extends ScrollView implements Scrollable {
     @Override
     protected void onOverScrolled(int scrollX, int scrollY, boolean clampedX, boolean clampedY) {
         super.onOverScrolled(scrollX, scrollY, clampedX, clampedY);
-
         if (clampedY) {
             if (mTouchRunnable != null) removeCallbacks(mTouchRunnable);
             mExpectedScrollSate = ScrollState.SCROLL_STATE_IDLE;

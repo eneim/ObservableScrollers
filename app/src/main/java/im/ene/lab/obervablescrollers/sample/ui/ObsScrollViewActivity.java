@@ -34,11 +34,9 @@ public class ObsScrollViewActivity extends BaseActivity {
                 int currTransY = (int) ViewCompat.getTranslationY(getActionbarToolbar());
                 int maxTransY = 0;
                 int minTransY = -getMaxTranslationYRange();
-
                 int transition = Math.min(maxTransY, Math.max(minTransY, currTransY - dy));
 
-                LogHelper.d(TAG, "currTransY: " + currTransY + ", actionbar: " + transition +
-                        ", scrollview: " + (-mScrollView.getVerticalScrollOffset()));
+                LogHelper.d(TAG, "transition: " + transition + ", scroll y: " + mScrollView.getVerticalScrollOffset());
 
                 ViewCompat.setTranslationY(getActionbarToolbar(), transition);
             }
@@ -49,7 +47,7 @@ public class ObsScrollViewActivity extends BaseActivity {
                     throw new IllegalArgumentException("This scrollview must implement Scrollable");
 
                 Scrollable scrollable = (Scrollable) scroller;
-
+                LogHelper.d(TAG, "scrollstate: " + newState.getName());
                 if (isToolbarFullyHiddenOrShown())
                     return;
 

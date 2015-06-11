@@ -51,7 +51,7 @@ public interface Scrollable {
             this.state = state;
         }
 
-        public String getState() {
+        public String getName() {
             return this.state;
         }
     }

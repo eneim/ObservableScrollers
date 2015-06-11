@@ -88,6 +88,8 @@ public class ObsListView extends ListView implements Scrollable {
                     if (mScrollListener != null)
                         mScrollListener.onScrollChanged(ObsListView.this, 0, diffY);
                 mLastScrollY = mScrollTracker.getVerticalScroll(firstVisibleItem, visibleItemCount);
+
+                LogHelper.d(TAG, "mLastScrollY: " + mLastScrollY);
             }
         });
     }

@@ -87,6 +87,11 @@ public class ListViewScrollTracker {
         return totalChildHeight - mListView.get().getChildAt(0).getTop() + mListView.get().getPaddingTop();
     }
 
+    public void reset() {
+        mPositions = null;
+        mChildHeights = new SparseIntArray();
+    }
+
     public void clear() {
         mChildHeights = null;
         mPositions = null;

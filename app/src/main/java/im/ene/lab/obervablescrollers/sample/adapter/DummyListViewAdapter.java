@@ -19,6 +19,8 @@ public class DummyListViewAdapter extends BaseAdapter {
 
     private final int[] dummytStrings = {R.string.lipsum_short, R.string.lipsum_short_2, R.string.lipsum_short_3};
 
+    private int count = (int) (Math.random() * 40) + 10;
+
     public DummyListViewAdapter(Context context) {
         super();
         mContext = context;
@@ -26,7 +28,13 @@ public class DummyListViewAdapter extends BaseAdapter {
 
     @Override
     public int getCount() {
-        return 50;
+        return count;
+    }
+
+    @Override
+    public void notifyDataSetChanged() {
+        count = (int) (Math.random() * 40) + 10;
+        super.notifyDataSetChanged();
     }
 
     @Override

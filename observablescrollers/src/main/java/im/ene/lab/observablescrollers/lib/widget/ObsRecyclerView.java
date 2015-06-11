@@ -98,7 +98,7 @@ public class ObsRecyclerView extends RecyclerView implements Scrollable {
                 mScrollListener.onScrollStateChanged(this, newState);
             }
 
-            LogHelper.d(TAG, "last scroll state: " + mLastScrollState.getState());
+            LogHelper.d(TAG, "last scroll state: " + mLastScrollState.getName());
         }
     }
 

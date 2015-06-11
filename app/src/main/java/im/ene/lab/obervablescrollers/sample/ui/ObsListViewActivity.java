@@ -3,6 +3,7 @@ package im.ene.lab.obervablescrollers.sample.ui;
 import android.os.Bundle;
 import android.support.v4.view.ViewCompat;
 import android.view.View;
+import android.widget.AdapterView;
 
 import im.ene.lab.obervablescrollers.sample.R;
 import im.ene.lab.obervablescrollers.sample.adapter.DummyListViewAdapter;
@@ -25,10 +26,13 @@ public class ObsListViewActivity extends BaseActivity {
         mListView = (ObsListView) findViewById(R.id.listview);
     }
 
+    DummyListViewAdapter dummyListViewAdapter;
+
     @Override
     protected void onPostCreate(Bundle savedInstanceState) {
         super.onPostCreate(savedInstanceState);
-        mListView.setAdapter(new DummyListViewAdapter(this));
+        dummyListViewAdapter = new DummyListViewAdapter(this);
+        mListView.setAdapter(dummyListViewAdapter);
 
         mListView.setPadding(mListView.getPaddingLeft(), mListView.getPaddingTop() + getMaxTranslationYRange(),
                 mListView.getPaddingRight(), mListView.getPaddingBottom());
@@ -61,6 +65,14 @@ public class ObsListViewActivity extends BaseActivity {
                         showToolbar();
                     }
                 }
+            }
+        });
+
+        // i want to test notifyDatasetChanged method
+        mListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                dummyListViewAdapter.notifyDataSetChanged();
             }
         });
     }
