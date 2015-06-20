@@ -5,6 +5,7 @@ import android.content.Context;
 import android.os.Build;
 import android.util.AttributeSet;
 import android.widget.AbsListView;
+import android.widget.ListAdapter;
 import android.widget.ListView;
 
 import im.ene.lab.observablescrollers.lib.util.ListViewScrollTracker;
@@ -110,6 +111,11 @@ public class ObsListView extends ListView implements Scrollable {
             mScrollTracker.clear();
         mScrollTracker = null;
         super.onDetachedFromWindow();
+    }
+
+    @Override
+    public void setAdapter(ListAdapter adapter) {
+        super.setAdapter(adapter);
     }
 
     @Override

@@ -11,6 +11,7 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import im.ene.lab.obervablescrollers.sample.R;
 import im.ene.lab.obervablescrollers.sample.ui.ObsListViewActivity;
+import im.ene.lab.obervablescrollers.sample.ui.ObsListViewFlexibleSpaceWithImageActivity;
 import im.ene.lab.obervablescrollers.sample.ui.ObsRecyclerViewActivity;
 import im.ene.lab.obervablescrollers.sample.ui.ObsScrollViewActivity;
 
@@ -49,6 +50,12 @@ public class MainActivityFragment extends Fragment {
     @OnClick(R.id.open_listview)
     void openListView() {
         Intent intent = new Intent(getActivity(), ObsListViewActivity.class);
+        startActivity(intent);
+    }
+
+    @OnClick(R.id.open_listview_flexspace_image)
+    void openListViewFlexImage() {
+        Intent intent = new Intent(getActivity(), ObsListViewFlexibleSpaceWithImageActivity.class);
         startActivity(intent);
     }
 }

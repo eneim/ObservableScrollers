@@ -41,11 +41,8 @@ public class ObsListViewActivity extends BaseActivity {
             @Override
             public void onScrollChanged(View scroller, int dx, int dy) {
                 int currTransY = (int) ViewCompat.getTranslationY(getActionbarToolbar());
-                int maxTransY = 0;
-                int minTransY = -getMaxTranslationYRange();
-
-                ViewCompat.setTranslationY(getActionbarToolbar(),
-                        Math.min(maxTransY, Math.max(minTransY, currTransY - dy)));
+                int transition = Math.min(getMinTransition(), Math.max(-getMaxTransition(), currTransY - dy));
+                ViewCompat.setTranslationY(getActionbarToolbar(), transition);
             }
 
             @Override

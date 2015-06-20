@@ -7,6 +7,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 
 import im.ene.lab.obervablescrollers.sample.R;
+import im.ene.lab.observablescrollers.lib.BuildConfig;
 import im.ene.lab.observablescrollers.lib.util.LogHelper;
 
 /**
@@ -27,8 +28,15 @@ public class BaseActivity extends AppCompatActivity {
     protected Toolbar getActionbarToolbar() {
         if (mToolbar == null) {
             mToolbar = (Toolbar) findViewById(R.id.toolbar);
-            setSupportActionBar(mToolbar);
-            mToolbarHeight = mToolbar.getLayoutParams().height;
+            if (mToolbar != null) {
+                setSupportActionBar(mToolbar);
+                mToolbarHeight = mToolbar.getLayoutParams().height;
+            } else {
+                // DEBUG only
+                if (BuildConfig.DEBUG) {
+                    throw new IllegalArgumentException("You didn't setup a toolbar in your layout");
+                }
+            }
         }
 
         return mToolbar;
@@ -61,6 +69,14 @@ public class BaseActivity extends AppCompatActivity {
 
     protected int getMaxTranslationYRange() {
         return mToolbarHeight;
+    }
+
+    protected int getMinTransition() {
+        return 0;
+    }
+
+    protected int getMaxTransition() {
+        return getMaxTranslationYRange();
     }
 
     protected boolean isToolbarFullyHiddenOrShown() {

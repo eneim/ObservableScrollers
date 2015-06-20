@@ -22,19 +22,26 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:padding="@dimen/activity_vertical_margin"
-        android:text="Observable ScrollView Activity" />
+        android:text="@string/title_activity_obs_scroll_view" />
 
     <Button
         android:id="@+id/open_recyclerview"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:padding="@dimen/activity_vertical_margin"
-        android:text="Observable RecyclerView Activity" />
+        android:text="@string/title_activity_obs_recycler_view" />
 
     <Button
         android:id="@+id/open_listview"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:padding="@dimen/activity_vertical_margin"
-        android:text="Observable ListView Activity" />
+        android:text="@string/title_activity_obs_list_view" />
+
+    <Button
+        android:id="@+id/open_listview_flexspace_image"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="@dimen/activity_vertical_margin"
+        android:text="@string/title_activity_obs_list_view_flexible_space_with_image" />
 </LinearLayout>

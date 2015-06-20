@@ -17,7 +17,11 @@ Quam libero nulla netus eu porta curae, ut nulla bibendum facilisis et urna sed,
         Risus lacus duis leo platea wisi, felis maecenas rutrum in id in donec, non id a potenti libero eget, posuere elit ea sed pellentesque quis. Sunt lacus urna lorem elit duis, nibh donec purus quisque consectetuer dolor, neque vestibulum proin ornare eros nonummy phasellus.
     </string>
 
-    <string name="title_activity_obs_recycler_view">ObsRecyclerViewActivity</string>
-    <string name="title_activity_main">MainActivity</string>
-    <string name="title_activity_obs_list_view">ObsListViewActivity</string>
+    <string name="title_activity_obs_recycler_view">ObsRecyclerView Activity</string>
+    <string name="title_activity_main">Observable Scrollable, by eneim</string>
+    <string name="title_activity_obs_scroll_view">ObsScrollView Activity</string>
+    <string name="title_activity_obs_list_view">ObsListView Activity</string>
+    <string name="title_activity_obs_list_view_flexible_space_with_image">ObsListView - Flexible
+        space with Image
+    </string>
 </resources>
