@@ -51,4 +51,11 @@
         android:layout_height="wrap_content"
         android:padding="@dimen/activity_vertical_margin"
         android:text="@string/title_activity_aosl_list_view_flexible_space_with_image" />
+
+    <Button
+        android:id="@+id/open_google_stand"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="@dimen/activity_vertical_margin"
+        android:text="@string/title_activity_obs_google_stand" />
 </LinearLayout>

@@ -5,6 +5,7 @@ package im.ene.lab.observablescrollers.lib.util;
  */
 public interface Scrollable {
 
+    void setOnScrollObservedListener(OnScrollObservedListener listener);
     /**
      *
      * @return

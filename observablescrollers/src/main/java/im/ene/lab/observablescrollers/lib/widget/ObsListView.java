@@ -45,6 +45,7 @@ public class ObsListView extends ListView implements Scrollable {
 
     private ScrollState mExpectedScrollSate = ScrollState.SCROLL_STATE_IDLE;
 
+    @Override
     public void setOnScrollObservedListener(OnScrollObservedListener listener) {
         this.mScrollListener = listener;
     }

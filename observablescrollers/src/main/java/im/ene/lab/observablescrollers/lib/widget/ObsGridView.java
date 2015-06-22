@@ -6,10 +6,13 @@ import android.os.Build;
 import android.util.AttributeSet;
 import android.widget.GridView;
 
+import im.ene.lab.observablescrollers.lib.util.OnScrollObservedListener;
+import im.ene.lab.observablescrollers.lib.util.Scrollable;
+
 /**
  * Created by eneim on 6/9/15.
  */
-public class ObsGridView extends GridView {
+public class ObsGridView extends GridView implements Scrollable {
     public ObsGridView(Context context) {
         super(context);
     }
@@ -27,4 +30,30 @@ public class ObsGridView extends GridView {
         super(context, attrs, defStyleAttr, defStyleRes);
     }
 
+    private OnScrollObservedListener mOnScrollObservedListener;
+
+    @Override
+    public void setOnScrollObservedListener(OnScrollObservedListener listener) {
+        mOnScrollObservedListener = listener;
+    }
+
+    @Override
+    public int getHorizontalScrollOffset() {
+        return 0;
+    }
+
+    @Override
+    public int getVerticalScrollOffset() {
+        return 0;
+    }
+
+    @Override
+    public void scrollVerticallyTo(int y) {
+
+    }
+
+    @Override
+    public void scrollVerticallyBy(int y) {
+
+    }
 }

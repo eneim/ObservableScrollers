@@ -60,6 +60,7 @@ public class ObsScrollView extends ScrollView implements Scrollable {
      *
      * @param listener
      */
+    @Override
     public void setOnScrollObservedListener(OnScrollObservedListener listener) {
         this.mScrollListener = listener;
     }

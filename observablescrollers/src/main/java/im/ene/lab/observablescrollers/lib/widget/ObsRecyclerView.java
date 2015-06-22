@@ -38,6 +38,7 @@ public class ObsRecyclerView extends RecyclerView implements Scrollable {
 
     private ScrollState mExpectedScrollSate = ScrollState.SCROLL_STATE_IDLE;
 
+    @Override
     public void setOnScrollObservedListener(OnScrollObservedListener listener) {
         this.mScrollListener = listener;
     }
@@ -123,7 +124,7 @@ public class ObsRecyclerView extends RecyclerView implements Scrollable {
 
     @Override
     public void scrollVerticallyTo(int y) {
-        scrollTo(0, y);
+        scrollTo(0, y); // !NOTE this will throw an Exception, read RecyclerView code for more information
     }
 
     @Override

@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <array name="item_titles">
+        <item>Hightlight</item>
+        <item>News</item>
+        <item>Business</item>
+        <item>Entertainment</item>
+        <item>Sport</item>
+        <item>Technology</item>
+        <item>World</item>
+    </array>
+</resources>
