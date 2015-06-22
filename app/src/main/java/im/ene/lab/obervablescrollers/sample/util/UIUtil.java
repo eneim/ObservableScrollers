@@ -26,11 +26,15 @@ public class UIUtil {
     }
 
     public static void setPaddingAnimation(final View view, final int newPaddingLeft, final int newPaddingRight) {
+        final int oldPaddingLeft = view.getPaddingLeft();
+        final int oldPaddingRight = view.getPaddingRight();
+
+        if (oldPaddingLeft == newPaddingLeft && oldPaddingRight == newPaddingRight) {
+            return;
+        }
+        
         ValueAnimator animator = ValueAnimator.ofFloat(1, 0).setDuration(250);
         animator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
-
-            private int oldPaddingLeft = view.getPaddingLeft();
-            private int oldPaddingRight = view.getPaddingRight();
 
             @Override
             public void onAnimationUpdate(ValueAnimator animation) {

@@ -153,7 +153,6 @@ public class ObsGoogleStandActivity extends BaseActivity implements OnScrollObse
 
         if ((mPagerHeaderHeight - scrollY) <= UIUtil.getActionbarToolbarHeight(this)) {
             UIUtil.setPaddingAnimation(mTabs, mTabs.getTabPaddingLeftRight(), mTabs.getTabPaddingLeftRight());
-            mTabs.setPaddingMiddle(false);
         }
 
     }
