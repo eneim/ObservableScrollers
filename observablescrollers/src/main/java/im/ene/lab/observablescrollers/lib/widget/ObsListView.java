@@ -85,12 +85,10 @@ public class ObsListView extends ListView implements Scrollable {
             @Override
             public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
                 diffY = -mScrollTracker.calculateIncrementalOffset(firstVisibleItem, visibleItemCount);
-                if (mLastScrollState != ScrollState.SCROLL_STATE_IDLE)
-                    if (mScrollListener != null)
-                        mScrollListener.onScrollChanged(ObsListView.this, 0, diffY);
-                mLastScrollY = mScrollTracker.getVerticalScroll(firstVisibleItem, visibleItemCount);
-
-                LogHelper.d(TAG, "mLastScrollY: " + mLastScrollY);
+                if (mScrollListener != null) {
+                    mScrollListener.onScrollChanged(ObsListView.this, 0, diffY);
+                }
+                mLastScrollY = mScrollTracker.getVerticalScroll(firstVisibleItem, visibleItemCount) + diffY;
             }
         });
     }

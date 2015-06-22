@@ -65,13 +65,15 @@ public class ListViewScrollTracker {
      * @return the scroll amount up to the current visible item
      */
     public int getVerticalScroll(int firstVisibleItem, int visibleItemCount) {
-        if (mListView == null || mListView.get().getChildAt(0) == null || firstVisibleItem < 0)
+        AbsListView listView = mListView.get();
+
+        if (mListView == null || listView.getChildAt(0) == null || firstVisibleItem < 0)
             return 0;
 
         // update heights list
         for (int i = 0; i < visibleItemCount; i++) {
-            if (mChildHeights.indexOfKey(firstVisibleItem + i) < 0 && mListView.get().getChildAt(i) != null)
-                mChildHeights.put(firstVisibleItem + i, mListView.get().getChildAt(i).getHeight());
+            if (mChildHeights.indexOfKey(firstVisibleItem + i) < 0 && listView.getChildAt(i) != null)
+                mChildHeights.put(firstVisibleItem + i, listView.getChildAt(i).getHeight());
         }
 
         int totalChildHeight = 0;
@@ -84,7 +86,7 @@ public class ListViewScrollTracker {
             totalChildHeight += mChildHeights.get(key);
         }
 
-        return totalChildHeight - mListView.get().getChildAt(0).getTop() + mListView.get().getPaddingTop();
+        return totalChildHeight - listView.getChildAt(0).getTop() + listView.getPaddingTop();
     }
 
     public void reset() {

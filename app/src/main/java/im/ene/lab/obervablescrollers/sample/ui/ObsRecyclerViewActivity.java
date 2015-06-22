@@ -4,7 +4,6 @@ import android.os.Bundle;
 import android.support.v4.view.ViewCompat;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
-import android.view.View;
 
 import im.ene.lab.obervablescrollers.sample.R;
 import im.ene.lab.obervablescrollers.sample.adapter.DummyRecyclerViewAdapter;
@@ -19,7 +18,6 @@ public class ObsRecyclerViewActivity extends BaseActivity {
     public static final String TAG = LogHelper.createLogTag(ObsRecyclerViewActivity.class);
 
     private ObsRecyclerView mRecyclerView;
-    private LinearLayoutManager mLayoutManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -32,7 +30,7 @@ public class ObsRecyclerViewActivity extends BaseActivity {
     @Override
     protected void onPostCreate(Bundle savedInstanceState) {
         super.onPostCreate(savedInstanceState);
-        mLayoutManager = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
+        LinearLayoutManager mLayoutManager = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
         mRecyclerView.setLayoutManager(mLayoutManager);
         mRecyclerView.setItemAnimator(new DefaultItemAnimator());
         mRecyclerView.setHasFixedSize(true);    // for better performance
@@ -40,25 +38,20 @@ public class ObsRecyclerViewActivity extends BaseActivity {
 
         mRecyclerView.setOnScrollObservedListener(new OnScrollObservedListener() {
             @Override
-            public void onScrollChanged(View scroller, int dx, int dy) {
-                int currTransY = (int) ViewCompat.getTranslationY(getActionbarToolbar());
-                int transition = Math.min(getMinTransition(), Math.max(-getMaxTransition(), currTransY - dy));
+            public void onScrollChanged(Scrollable scroller, int dx, int dy) {
+                float currTransY = ViewCompat.getTranslationY(getActionbarToolbar());
+                float transition = Math.min(getMinTransition(), Math.max(-getMaxTransition(), currTransY - dy));
                 ViewCompat.setTranslationY(getActionbarToolbar(), transition);
             }
 
             @Override
-            public void onScrollStateChanged(View scroller, Scrollable.ScrollState newState) {
-                if (!(scroller instanceof Scrollable))
-                    throw new IllegalArgumentException("This scrollview must implement Scrollable");
-
-                Scrollable scrollable = (Scrollable) scroller;
-
+            public void onScrollStateChanged(Scrollable scroller, Scrollable.ScrollState newState) {
                 if (isToolbarFullyHiddenOrShown())
                     return;
 
                 if (newState == Scrollable.ScrollState.SCROLL_STATE_IDLE) {
-                    LogHelper.d(TAG, scrollable.getVerticalScrollOffset() + "");
-                    if (scrollable.getVerticalScrollOffset() > getMaxTranslationYRange()) {
+                    LogHelper.d(TAG, scroller.getVerticalScrollOffset() + "");
+                    if (scroller.getVerticalScrollOffset() > getMaxTranslationYRange()) {
                         hideToolbar();
                     } else {
                         showToolbar();

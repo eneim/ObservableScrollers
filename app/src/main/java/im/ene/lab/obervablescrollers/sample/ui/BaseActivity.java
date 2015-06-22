@@ -67,15 +67,15 @@ public class BaseActivity extends AppCompatActivity {
         }
     }
 
-    protected int getMaxTranslationYRange() {
+    protected float getMaxTranslationYRange() {
         return mToolbarHeight;
     }
 
-    protected int getMinTransition() {
+    protected float getMinTransition() {
         return 0;
     }
 
-    protected int getMaxTransition() {
+    protected float getMaxTransition() {
         return getMaxTranslationYRange();
     }
 

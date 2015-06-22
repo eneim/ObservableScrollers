@@ -2,7 +2,6 @@ package im.ene.lab.obervablescrollers.sample.ui;
 
 import android.os.Bundle;
 import android.support.v4.view.ViewCompat;
-import android.view.View;
 
 import im.ene.lab.obervablescrollers.sample.R;
 import im.ene.lab.observablescrollers.lib.util.LogHelper;
@@ -30,25 +29,20 @@ public class ObsScrollViewActivity extends BaseActivity {
         super.onPostCreate(savedInstanceState);
         mScrollView.setOnScrollObservedListener(new OnScrollObservedListener() {
             @Override
-            public void onScrollChanged(View scroller, int dx, int dy) {
-                int currTransY = (int) ViewCompat.getTranslationY(getActionbarToolbar());
-                int transition = Math.min(getMinTransition(), Math.max(-getMaxTransition(), currTransY - dy));
+            public void onScrollChanged(Scrollable scroller, int dx, int dy) {
+                float currTransY = (int) ViewCompat.getTranslationY(getActionbarToolbar());
+                float transition = Math.min(getMinTransition(), Math.max(-getMaxTransition(), currTransY - dy));
                 LogHelper.d(TAG, "transition: " + transition + ", scroll y: " + mScrollView.getScrollY());
                 ViewCompat.setTranslationY(getActionbarToolbar(), transition);
             }
 
             @Override
-            public void onScrollStateChanged(View scroller, Scrollable.ScrollState newState) {
-                if (!(scroller instanceof Scrollable))
-                    throw new IllegalArgumentException("This scrollview must implement Scrollable");
-
-                Scrollable scrollable = (Scrollable) scroller;
-                LogHelper.d(TAG, "scrollstate: " + newState.getName());
+            public void onScrollStateChanged(Scrollable scroller, Scrollable.ScrollState newState) {
                 if (isToolbarFullyHiddenOrShown())
                     return;
 
                 if (newState == Scrollable.ScrollState.SCROLL_STATE_IDLE) {
-                    if (scrollable.getVerticalScrollOffset() > getMaxTranslationYRange()) {
+                    if (scroller.getVerticalScrollOffset() > getMaxTranslationYRange()) {
                         hideToolbar();
                     } else {
                         showToolbar();

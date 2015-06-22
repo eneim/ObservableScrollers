@@ -34,29 +34,24 @@ public class ObsListViewActivity extends BaseActivity {
         dummyListViewAdapter = new DummyListViewAdapter(this);
         mListView.setAdapter(dummyListViewAdapter);
 
-        mListView.setPadding(mListView.getPaddingLeft(), mListView.getPaddingTop() + getMaxTranslationYRange(),
+        mListView.setPadding(mListView.getPaddingLeft(), (int) (mListView.getPaddingTop() + getMaxTranslationYRange()),
                 mListView.getPaddingRight(), mListView.getPaddingBottom());
 
         mListView.setOnScrollObservedListener(new OnScrollObservedListener() {
             @Override
-            public void onScrollChanged(View scroller, int dx, int dy) {
-                int currTransY = (int) ViewCompat.getTranslationY(getActionbarToolbar());
-                int transition = Math.min(getMinTransition(), Math.max(-getMaxTransition(), currTransY - dy));
+            public void onScrollChanged(Scrollable scroller, int dx, int dy) {
+                float currTransY = (int) ViewCompat.getTranslationY(getActionbarToolbar());
+                float transition = Math.min(getMinTransition(), Math.max(-getMaxTransition(), currTransY - dy));
                 ViewCompat.setTranslationY(getActionbarToolbar(), transition);
             }
 
             @Override
-            public void onScrollStateChanged(View scroller, Scrollable.ScrollState newState) {
-                if (!(scroller instanceof Scrollable))
-                    throw new IllegalArgumentException("This scrollview must implement Scrollable");
-
-                Scrollable scrollable = (Scrollable) scroller;
-
+            public void onScrollStateChanged(Scrollable scroller, Scrollable.ScrollState newState) {
                 if (isToolbarFullyHiddenOrShown())
                     return;
 
                 if (newState == Scrollable.ScrollState.SCROLL_STATE_IDLE) {
-                    if (scrollable.getVerticalScrollOffset() > getMaxTranslationYRange()) {
+                    if (scroller.getVerticalScrollOffset() > getMaxTranslationYRange()) {
                         hideToolbar();
                     } else {
                         showToolbar();
