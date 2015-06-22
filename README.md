@@ -7,9 +7,15 @@ Easy to use observable scroller.
 Include in build.gradle
 
 ```
-compile 'im.ene:observablescrollers:0.0.2@aar'
+compile 'im.ene:observablescrollers:0.0.3@aar'
 ```
 # Changelog
+
+- 0.0.3 (2015 June 22nd)
+
+Some big updates in ObsListview, add an example on flexible space with Images, many credits to https://github.com/ksoichiro/Android-ObservableScrollView (I would like to borrow scaling calculation and transition logic from his example)
+
+**This library is still in DEVELOPING MODE**
 
 - 0.0.2 (2015 June 19th)
 
