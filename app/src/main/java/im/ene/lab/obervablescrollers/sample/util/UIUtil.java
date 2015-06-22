@@ -1,7 +1,9 @@
 package im.ene.lab.obervablescrollers.sample.util;
 
+import android.animation.ValueAnimator;
 import android.content.Context;
 import android.util.TypedValue;
+import android.view.View;
 
 import im.ene.lab.obervablescrollers.sample.R;
 import im.ene.lab.observablescrollers.lib.util.LogHelper;
@@ -21,5 +23,25 @@ public class UIUtil {
         LogHelper.d("action_bar_height", result + "");
 
         return result;
+    }
+
+    public static void setPaddingAnimation(final View view, final int newPaddingLeft, final int newPaddingRight) {
+        ValueAnimator animator = ValueAnimator.ofFloat(1, 0).setDuration(250);
+        animator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+
+            private int oldPaddingLeft = view.getPaddingLeft();
+            private int oldPaddingRight = view.getPaddingRight();
+
+            @Override
+            public void onAnimationUpdate(ValueAnimator animation) {
+                float factor = (float) animation.getAnimatedValue();
+
+                int tempPaddingLeft = (int) (oldPaddingLeft * factor + newPaddingLeft * (1 - factor));
+                int tempPaddingRight = (int) (oldPaddingRight * factor + newPaddingRight * (1 - factor));
+                view.setPadding(tempPaddingLeft, view.getPaddingTop(), tempPaddingRight, view.getPaddingBottom());
+            }
+        });
+
+        animator.start();
     }
 }

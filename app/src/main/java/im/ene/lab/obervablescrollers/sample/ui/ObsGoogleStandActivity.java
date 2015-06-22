@@ -1,10 +1,14 @@
 package im.ene.lab.obervablescrollers.sample.ui;
 
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.view.ViewCompat;
 import android.support.v4.view.ViewPager;
+import android.text.Spannable;
+import android.text.SpannableString;
+import android.util.TypedValue;
 import android.view.View;
 
 import com.astuetz.PagerSlidingTabStrip;
@@ -15,12 +19,12 @@ import im.ene.lab.obervablescrollers.sample.R;
 import im.ene.lab.obervablescrollers.sample.fragment.DummyRecyclerViewFragment;
 import im.ene.lab.obervablescrollers.sample.fragment.DummyScrollViewFragment;
 import im.ene.lab.obervablescrollers.sample.util.UIUtil;
+import im.ene.lab.obervablescrollers.sample.widget.AlphaForegroundColorSpan;
 import im.ene.lab.observablescrollers.lib.adapter.SmartFragmentStatePagerAdapter;
 import im.ene.lab.observablescrollers.lib.fragment.ObsFragment;
 import im.ene.lab.observablescrollers.lib.util.LogHelper;
 import im.ene.lab.observablescrollers.lib.util.OnScrollObservedListener;
 import im.ene.lab.observablescrollers.lib.util.Scrollable;
-import im.ene.lab.observablescrollers.lib.util.TabPosition;
 
 public class ObsGoogleStandActivity extends BaseActivity implements OnScrollObservedListener {
 
@@ -34,6 +38,9 @@ public class ObsGoogleStandActivity extends BaseActivity implements OnScrollObse
     View mPagerHeader;
     @InjectView(R.id.header_thumbnail)
     View mThumbNail;
+
+    private AlphaForegroundColorSpan mAlphaForegroundColorSpan;
+    private SpannableString mSpannableString;
 
     private String[] mTitles;
 
@@ -49,9 +56,32 @@ public class ObsGoogleStandActivity extends BaseActivity implements OnScrollObse
         mMainHeaderHeight = getResources().getDimensionPixelSize(R.dimen.google_play_header_large);
         mPagerHeaderHeight = getResources().getDimensionPixelSize(R.dimen.google_play_header_middle);
         mActionbarHeight = UIUtil.getActionbarToolbarHeight(this);
+
+        mSpannableString = new SpannableString(getString(R.string.title_activity_obs_google_stand));
+        getTheme().resolveAttribute(R.attr.colorPrimary, mTypedValue, true);
+        toolbarColor = new ColorDrawable(mTypedValue.data);
     }
 
     private int mCurrentScrollY;
+
+    private void setTitleAlpha(float alpha) {
+        if (mSpannableString == null || mAlphaForegroundColorSpan == null)
+            return;
+        mAlphaForegroundColorSpan.setAlpha(alpha);
+        mSpannableString.setSpan(mAlphaForegroundColorSpan, 0,
+                mSpannableString.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+        setTitle(mSpannableString);
+    }
+
+    private final TypedValue mTypedValue = new TypedValue();
+    private ColorDrawable toolbarColor;
+
+    private void setToolbarAlpha(float alpha) {
+        toolbarColor.setAlpha((int) (alpha * 255));
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setBackgroundDrawable(toolbarColor);
+        }
+    }
 
     @Override
     protected void onPostCreate(Bundle savedInstanceState) {
@@ -66,10 +96,6 @@ public class ObsGoogleStandActivity extends BaseActivity implements OnScrollObse
             private int currentItemPosition = 0;
 
             private int expectedNextPosition = 0;
-
-            TabPosition currentPosition = new TabPosition(0, 0.0f);
-
-            TabPosition nextPosition = new TabPosition(0, 0.0f);
 
             @Override
             public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
@@ -108,7 +134,6 @@ public class ObsGoogleStandActivity extends BaseActivity implements OnScrollObse
 
         });
 
-        LogHelper.d("mTabs", mTabs.getPaddingLeft() + " | " + mTabs.getPaddingRight() + " | " + mTabs.getTabPaddingLeftRight());
     }
 
     @Override
@@ -123,8 +148,13 @@ public class ObsGoogleStandActivity extends BaseActivity implements OnScrollObse
         ViewCompat.setTranslationY(mPagerHeader, transition);
 
         float alpha = Math.min(1, Math.max(0, (scrollY * 2) / mPagerHeaderHeight));
-        LogHelper.d("alpha", alpha + "");
+        LogHelper.d("scrollY", scrollY + "");
         ViewCompat.setAlpha(mThumbNail, 1.0f - alpha);
+
+        if ((mPagerHeaderHeight - scrollY) <= UIUtil.getActionbarToolbarHeight(this)) {
+            UIUtil.setPaddingAnimation(mTabs, mTabs.getTabPaddingLeftRight(), mTabs.getTabPaddingLeftRight());
+            mTabs.setPaddingMiddle(false);
+        }
 
     }
 
