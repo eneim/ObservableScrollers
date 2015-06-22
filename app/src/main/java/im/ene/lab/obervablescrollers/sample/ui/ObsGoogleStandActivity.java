@@ -13,11 +13,14 @@ import butterknife.ButterKnife;
 import butterknife.InjectView;
 import im.ene.lab.obervablescrollers.sample.R;
 import im.ene.lab.obervablescrollers.sample.fragment.DummyRecyclerViewFragment;
+import im.ene.lab.obervablescrollers.sample.fragment.DummyScrollViewFragment;
 import im.ene.lab.obervablescrollers.sample.util.UIUtil;
 import im.ene.lab.observablescrollers.lib.adapter.SmartFragmentStatePagerAdapter;
 import im.ene.lab.observablescrollers.lib.fragment.ObsFragment;
+import im.ene.lab.observablescrollers.lib.util.LogHelper;
 import im.ene.lab.observablescrollers.lib.util.OnScrollObservedListener;
 import im.ene.lab.observablescrollers.lib.util.Scrollable;
+import im.ene.lab.observablescrollers.lib.util.TabPosition;
 
 public class ObsGoogleStandActivity extends BaseActivity implements OnScrollObservedListener {
 
@@ -64,6 +67,10 @@ public class ObsGoogleStandActivity extends BaseActivity implements OnScrollObse
 
             private int expectedNextPosition = 0;
 
+            TabPosition currentPosition = new TabPosition(0, 0.0f);
+
+            TabPosition nextPosition = new TabPosition(0, 0.0f);
+
             @Override
             public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
                 if (currentItemPosition == position) {
@@ -98,7 +105,10 @@ public class ObsGoogleStandActivity extends BaseActivity implements OnScrollObse
             public void onPageScrollStateChanged(int state) {
 
             }
+
         });
+
+        LogHelper.d("mTabs", mTabs.getPaddingLeft() + " | " + mTabs.getPaddingRight() + " | " + mTabs.getTabPaddingLeftRight());
     }
 
     @Override
@@ -112,7 +122,8 @@ public class ObsGoogleStandActivity extends BaseActivity implements OnScrollObse
         float transition = Math.min(0, Math.max(-mPagerHeaderHeight, -scrollY));
         ViewCompat.setTranslationY(mPagerHeader, transition);
 
-        float alpha = Math.min(1, Math.max(0, scrollY / mPagerHeaderHeight));
+        float alpha = Math.min(1, Math.max(0, (scrollY * 2) / mPagerHeaderHeight));
+        LogHelper.d("alpha", alpha + "");
         ViewCompat.setAlpha(mThumbNail, 1.0f - alpha);
 
     }
@@ -133,7 +144,12 @@ public class ObsGoogleStandActivity extends BaseActivity implements OnScrollObse
 
         @Override
         public Fragment getItem(int position) {
-            return DummyRecyclerViewFragment.newInstance();
+            Fragment fragment;
+            if (position % 3 == 0)
+                fragment = DummyRecyclerViewFragment.newInstance();
+            else
+                fragment = DummyScrollViewFragment.newInstance();
+            return fragment;
         }
 
         @Override

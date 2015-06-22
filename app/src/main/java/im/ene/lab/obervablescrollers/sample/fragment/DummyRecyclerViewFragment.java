@@ -53,6 +53,7 @@ public class DummyRecyclerViewFragment extends ObsFragment {
         mRecyclerView.setItemAnimator(new DefaultItemAnimator());
         mRecyclerView.setHasFixedSize(true);    // for better performance
         mRecyclerView.setAdapter(new DummyRecyclerViewAdapter());
+        mRecyclerView.setOnScrollObservedListener(mOnScrollObservedListener);
     }
 
     @Override
