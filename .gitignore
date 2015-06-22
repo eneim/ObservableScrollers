@@ -12,3 +12,4 @@ ObservableScrollers.iml
 observablescrollers/observablescrollers.iml
 observablescrollers/proguard-rules.pro
 app/proguard-rules.pro
+app/app.iml
