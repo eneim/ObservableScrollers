@@ -1,8 +1,5 @@
 package im.ene.lab.obervablescrollers.sample.ui;
 
-import android.annotation.TargetApi;
-import android.content.res.Configuration;
-import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.view.ViewCompat;
 import android.view.View;
@@ -33,7 +30,6 @@ public class ObsListViewFlexibleSpaceWithImageActivity extends BaseActivity {
     View mTitleView;
 
     private int mMaxTransition;
-
     private int mActionBarHeight;
 
     @Override
@@ -53,6 +49,10 @@ public class ObsListViewFlexibleSpaceWithImageActivity extends BaseActivity {
     @Override
     protected void onPostCreate(Bundle savedInstanceState) {
         super.onPostCreate(savedInstanceState);
+
+        ViewCompat.setPivotX(mTitleView, 0);
+        ViewCompat.setPivotY(mTitleView, 0);
+
         dummyListViewAdapter = new DummyListViewAdapter(this);
         mListView.setAdapter(dummyListViewAdapter);
         mListView.setPadding(mListView.getPaddingLeft(), (int) (mListView.getPaddingTop() + getMaxTransition()),
@@ -66,15 +66,23 @@ public class ObsListViewFlexibleSpaceWithImageActivity extends BaseActivity {
                 float transition = Math.min(0, Math.max(-getMaxTranslationYRange(), -scrollY));
                 ViewCompat.setTranslationY(mOverLayView, transition);
 
-                float parallax = Math.min(0, Math.max(-getMaxTranslationYRange(), (float) -scrollY / 2));
-                ViewCompat.setTranslationY(mImageView, parallax);
-
                 float alpha = Math.min(1, Math.max(0, (float) scrollY / getMaxTranslationYRange()));
                 ViewCompat.setAlpha(mOverLayView, alpha);
 
-                float scale = 1 + Math.min(0, Math.max(MAX_TEXT_SCALE_DELTA,
-                        (getMaxTranslationYRange() - (float) (scrollY)) / getMaxTranslationYRange()));
-                LogHelper.d("Space", (getMaxTranslationYRange() - (float) (scrollY)) / getMaxTranslationYRange() + "");
+                float parallax = Math.min(0, Math.max(-getMaxTranslationYRange(), (float) -scrollY / 2));
+                ViewCompat.setTranslationY(mImageView, parallax);
+
+                float scale = 1 + Math.min(MAX_TEXT_SCALE_DELTA, Math.max(0.0f,
+                        (getMaxTranslationYRange() - (float) scrollY) / getMaxTranslationYRange()));
+
+                ViewCompat.setScaleX(mTitleView, scale);
+                ViewCompat.setScaleY(mTitleView, scale);
+
+                // Translate title text
+                int maxTitleTranslationY = (int) (getMaxTransition() - mTitleView.getHeight() * scale);
+                float titleTranslationY = Math.min(getMaxTransition() - mTitleView.getHeight() * 1.3f,
+                        maxTitleTranslationY - scrollY);
+                ViewCompat.setTranslationY(mTitleView, titleTranslationY);
             }
 
             @Override
@@ -95,11 +103,6 @@ public class ObsListViewFlexibleSpaceWithImageActivity extends BaseActivity {
     }
 
     @Override
-    protected float getMaxTranslationYRange() {
-        return getMaxTransition() - getMinTransition();
-    }
-
-    @Override
     protected float getMinTransition() {
         return mActionBarHeight;
     }
@@ -109,14 +112,4 @@ public class ObsListViewFlexibleSpaceWithImageActivity extends BaseActivity {
         return mMaxTransition;
     }
 
-    @TargetApi(Build.VERSION_CODES.JELLY_BEAN_MR1)
-    private void setPivotXToTitle() {
-        Configuration config = getResources().getConfiguration();
-        if (Build.VERSION_CODES.JELLY_BEAN_MR1 <= Build.VERSION.SDK_INT
-                && config.getLayoutDirection() == View.LAYOUT_DIRECTION_RTL) {
-            ViewCompat.setPivotX(mTitleView, findViewById(android.R.id.content).getWidth());
-        } else {
-            ViewCompat.setPivotX(mTitleView, 0);
-        }
-    }
 }

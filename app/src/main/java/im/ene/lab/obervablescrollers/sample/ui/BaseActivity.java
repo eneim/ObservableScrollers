@@ -68,15 +68,16 @@ public class BaseActivity extends AppCompatActivity {
     }
 
     protected float getMaxTranslationYRange() {
-        return mToolbarHeight;
+        return getMaxTransition() - getMinTransition();
     }
 
     protected float getMinTransition() {
         return 0;
     }
 
+    // this method need to be overridden in those activities that don't have toolbar/actionbar
     protected float getMaxTransition() {
-        return getMaxTranslationYRange();
+        return mToolbarHeight;
     }
 
     protected boolean isToolbarFullyHiddenOrShown() {
