@@ -8,9 +8,9 @@ import android.widget.AbsListView;
 import android.widget.ListAdapter;
 import android.widget.ListView;
 
-import im.ene.lab.observablescrollers.lib.util.ListViewScrollTracker;
 import im.ene.lab.observablescrollers.lib.util.LogHelper;
 import im.ene.lab.observablescrollers.lib.util.OnScrollObservedListener;
+import im.ene.lab.observablescrollers.lib.util.PixelScrollDetector;
 import im.ene.lab.observablescrollers.lib.util.Scrollable;
 
 /**
@@ -37,7 +37,7 @@ public class ObsListView extends ListView implements Scrollable {
         super(context, attrs, defStyleAttr, defStyleRes);
     }
 
-    private ListViewScrollTracker mScrollTracker;
+    private PixelScrollDetector mScrollDetector;
 
     private OnScrollObservedListener mScrollListener;
 
@@ -51,15 +51,23 @@ public class ObsListView extends ListView implements Scrollable {
 
     private int mLastScrollY;
 
-    private int diffY;
+    private float diffY;
 
     @Override
     protected void onAttachedToWindow() {
         super.onAttachedToWindow();
-        mScrollTracker = new ListViewScrollTracker(this);
+        mScrollDetector = new PixelScrollDetector(new PixelScrollDetector.PixelScrollListener() {
+            @Override
+            public void onScroll(AbsListView view, float deltaY, int scrollY) {
+                diffY = -deltaY;
+                mLastScrollY = scrollY;
+            }
+        });
+
         setOnScrollListener(new OnScrollListener() {
             @Override
             public void onScrollStateChanged(AbsListView view, int scrollState) {
+                mScrollDetector.onScrollStateChanged(view, scrollState);
                 switch (scrollState) {
                     case SCROLL_STATE_IDLE:
                         mExpectedScrollSate = ScrollState.SCROLL_STATE_IDLE;
@@ -84,11 +92,11 @@ public class ObsListView extends ListView implements Scrollable {
 
             @Override
             public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
-                diffY = -mScrollTracker.calculateIncrementalOffset(firstVisibleItem, visibleItemCount);
-                mLastScrollY = mScrollTracker.getVerticalScroll(firstVisibleItem, visibleItemCount) + diffY;
+                mScrollDetector.onScroll(view, firstVisibleItem, visibleItemCount, totalItemCount);
                 if (mScrollListener != null) {
-                    mScrollListener.onScrollChanged(ObsListView.this, 0, diffY);
+                    mScrollListener.onScrollChanged(ObsListView.this, 0, (int) diffY);
                 }
+
             }
         });
     }
@@ -105,9 +113,7 @@ public class ObsListView extends ListView implements Scrollable {
     @Override
     protected void onDetachedFromWindow() {
         setOnScrollListener(null);
-        if (mScrollTracker != null)
-            mScrollTracker.clear();
-        mScrollTracker = null;
+        mScrollDetector = null;
         super.onDetachedFromWindow();
     }
 
