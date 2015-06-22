@@ -10,7 +10,7 @@ import android.widget.ListView;
 
 import im.ene.lab.observablescrollers.lib.util.LogHelper;
 import im.ene.lab.observablescrollers.lib.util.OnScrollObservedListener;
-import im.ene.lab.observablescrollers.lib.util.PixelScrollDetector;
+import im.ene.lab.observablescrollers.lib.util.InternalScrollListener;
 import im.ene.lab.observablescrollers.lib.util.Scrollable;
 
 /**
@@ -37,7 +37,7 @@ public class ObsListView extends ListView implements Scrollable {
         super(context, attrs, defStyleAttr, defStyleRes);
     }
 
-    private PixelScrollDetector mScrollDetector;
+    private InternalScrollListener mScrollDetector;
 
     private OnScrollObservedListener mScrollListener;
 
@@ -56,10 +56,10 @@ public class ObsListView extends ListView implements Scrollable {
     @Override
     protected void onAttachedToWindow() {
         super.onAttachedToWindow();
-        mScrollDetector = new PixelScrollDetector(new PixelScrollDetector.PixelScrollListener() {
+        mScrollDetector = new InternalScrollListener(new InternalScrollListener.PixelScrollListener() {
             @Override
             public void onScroll(AbsListView view, float deltaY, int scrollY) {
-                diffY = -deltaY;
+                diffY = -deltaY;    // to unify the scroll direction with other component, I take the inverse value;
                 mLastScrollY = scrollY;
             }
         });

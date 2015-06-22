@@ -13,7 +13,7 @@ import im.ene.lab.obervablescrollers.sample.R;
 /**
  * Created by eneim on 6/5/15.
  */
-public class DummyListViewAdapter extends BaseAdapter {
+public class DummyDynamicListViewAdapter extends BaseAdapter {
 
     private final Context mContext;
 
@@ -21,7 +21,7 @@ public class DummyListViewAdapter extends BaseAdapter {
 
     private int count = (int) (Math.random() * 40) + 10;
 
-    public DummyListViewAdapter(Context context) {
+    public DummyDynamicListViewAdapter(Context context) {
         super();
         mContext = context;
     }
@@ -50,7 +50,7 @@ public class DummyListViewAdapter extends BaseAdapter {
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         if (convertView == null)
-            convertView = LayoutInflater.from(parent.getContext()).inflate(R.layout.card_item, parent, false);
+            convertView = LayoutInflater.from(mContext).inflate(R.layout.card_item, parent, false);
 
         TextView mText = ViewHolder.get(convertView, R.id.text);
         mText.setText(getRandomStringId(dummytStrings.length, position));

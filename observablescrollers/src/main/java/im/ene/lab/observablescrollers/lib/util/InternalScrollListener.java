@@ -10,7 +10,7 @@ import android.widget.AbsListView;
  * by making it a detector that can be attached to any AbsListView.
  * http://stackoverflow.com/questions/8471075/android-listview-find-the-amount-of-pixels-scrolled
  */
-public class PixelScrollDetector implements AbsListView.OnScrollListener {
+public class InternalScrollListener implements AbsListView.OnScrollListener {
     private final PixelScrollListener listener;
 
     private SparseIntArray mChildHeights = new SparseIntArray();
@@ -21,7 +21,7 @@ public class PixelScrollDetector implements AbsListView.OnScrollListener {
             new TrackElement(2), // mid view, top Y
             new TrackElement(3)};// bottom view, top Y
 
-    public PixelScrollDetector(PixelScrollListener listener) {
+    public InternalScrollListener(PixelScrollListener listener) {
         this.listener = listener;
     }
 

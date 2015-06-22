@@ -28,6 +28,8 @@ public class ObsListViewFlexibleSpaceWithImageActivity extends BaseActivity {
     View mImageView;
     @InjectView(R.id.title)
     View mTitleView;
+    @InjectView(R.id.list_background)
+    View mListBackground;
 
     private int mMaxTransition;
     private int mActionBarHeight;
@@ -65,6 +67,7 @@ public class ObsListViewFlexibleSpaceWithImageActivity extends BaseActivity {
 
                 float transition = Math.min(0, Math.max(-getMaxTranslationYRange(), -scrollY));
                 ViewCompat.setTranslationY(mOverLayView, transition);
+                ViewCompat.setTranslationY(mListBackground, Math.max(0, getMaxTransition() - scrollY));
 
                 float alpha = Math.min(1, Math.max(0, (float) scrollY / getMaxTranslationYRange()));
                 ViewCompat.setAlpha(mOverLayView, alpha);
