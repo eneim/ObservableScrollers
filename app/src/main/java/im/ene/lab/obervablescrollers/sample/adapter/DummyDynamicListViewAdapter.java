@@ -9,6 +9,7 @@ import android.widget.BaseAdapter;
 import android.widget.TextView;
 
 import im.ene.lab.obervablescrollers.sample.R;
+import im.ene.lab.observablescrollers.lib.util.LogHelper;
 
 /**
  * Created by eneim on 6/5/15.
@@ -50,16 +51,29 @@ public class DummyDynamicListViewAdapter extends BaseAdapter {
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         if (convertView == null)
-            convertView = LayoutInflater.from(mContext).inflate(R.layout.card_item, parent, false);
+            convertView = LayoutInflater.from(mContext).inflate(R.layout.card_item_dynamic, parent, false);
 
         TextView mText = ViewHolder.get(convertView, R.id.text);
-        mText.setText(getRandomStringId(dummytStrings.length, position));
+        final View mExtra = ViewHolder.get(convertView, R.id.view_extra);
+
+        mText.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (mExtra.getVisibility() == View.GONE) {
+                    mExtra.setVisibility(View.VISIBLE);
+                } else {
+                    mExtra.setVisibility(View.GONE);
+                }
+            }
+        });
+
+        LogHelper.d("test", position + " - " + convertView.getMeasuredHeight());
+        mText.setText(getContent(dummytStrings.length, position));
         return convertView;
     }
 
-    private String getRandomStringId(int max, int position) {
-        int seed = (int) (Math.random() * max);
-        return position + " - " + mContext.getString(dummytStrings[seed]);
+    private String getContent(int max, int position) {
+        return position + " - " + mContext.getString(dummytStrings[position % max]);
     }
 
     public static class ViewHolder {
@@ -68,9 +82,10 @@ public class DummyDynamicListViewAdapter extends BaseAdapter {
         public static <T extends View> T get(View view, int id) {
             SparseArray<View> viewHolder = (SparseArray<View>) view.getTag();
             if (viewHolder == null) {
-                viewHolder = new SparseArray<View>();
+                viewHolder = new SparseArray<>();
                 view.setTag(viewHolder);
             }
+
             View childView = viewHolder.get(id);
             if (childView == null) {
                 childView = view.findViewById(id);

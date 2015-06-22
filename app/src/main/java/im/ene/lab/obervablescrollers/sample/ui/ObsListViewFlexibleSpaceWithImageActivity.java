@@ -3,12 +3,11 @@ package im.ene.lab.obervablescrollers.sample.ui;
 import android.os.Bundle;
 import android.support.v4.view.ViewCompat;
 import android.view.View;
-import android.widget.AdapterView;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import im.ene.lab.obervablescrollers.sample.R;
-import im.ene.lab.obervablescrollers.sample.adapter.DummyListViewAdapter;
+import im.ene.lab.obervablescrollers.sample.adapter.DummyDynamicListViewAdapter;
 import im.ene.lab.obervablescrollers.sample.util.UIUtil;
 import im.ene.lab.observablescrollers.lib.util.LogHelper;
 import im.ene.lab.observablescrollers.lib.util.OnScrollObservedListener;
@@ -44,7 +43,7 @@ public class ObsListViewFlexibleSpaceWithImageActivity extends BaseActivity {
         mActionBarHeight = UIUtil.getActionbarToolbarHeight(this);
     }
 
-    DummyListViewAdapter dummyListViewAdapter;
+    DummyDynamicListViewAdapter dummyListViewAdapter;
 
     private final float MAX_TEXT_SCALE_DELTA = 0.3f;
 
@@ -55,7 +54,7 @@ public class ObsListViewFlexibleSpaceWithImageActivity extends BaseActivity {
         ViewCompat.setPivotX(mTitleView, 0);
         ViewCompat.setPivotY(mTitleView, 0);
 
-        dummyListViewAdapter = new DummyListViewAdapter(this);
+        dummyListViewAdapter = new DummyDynamicListViewAdapter(this);
         mListView.setAdapter(dummyListViewAdapter);
         mListView.setPadding(mListView.getPaddingLeft(), (int) (mListView.getPaddingTop() + getMaxTransition()),
                 mListView.getPaddingRight(), mListView.getPaddingBottom());
@@ -95,13 +94,6 @@ public class ObsListViewFlexibleSpaceWithImageActivity extends BaseActivity {
             }
         });
 
-        // i want to test notifyDatasetChanged method
-        mListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                dummyListViewAdapter.notifyDataSetChanged();
-            }
-        });
     }
 
     @Override
