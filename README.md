@@ -7,8 +7,17 @@ Easy to use observable scroller.
 Include in build.gradle
 
 ```
-compile 'im.ene:observablescrollers:0.0.1@aar'
+compile 'im.ene:observablescrollers:0.0.2@aar'
 ```
+# Changelog
+
+- 0.0.2 (2015 June 19th)
+
+Add Observable Listview (ObsListview) , alpha testing only
+
+- 0.0.1 
+
+Original First release, almost alpha testing
 
 # License
 
