@@ -88,9 +88,7 @@ public class ObsListViewFlexibleSpaceWithImageActivity extends BaseActivity {
 
             @Override
             public void onScrollStateChanged(Scrollable scroller, Scrollable.ScrollState newState) {
-                if (newState == Scrollable.ScrollState.SCROLL_STATE_IDLE) {
 
-                }
             }
         });
 
