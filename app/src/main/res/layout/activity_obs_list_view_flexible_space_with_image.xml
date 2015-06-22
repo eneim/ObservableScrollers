@@ -38,9 +38,9 @@
             android:gravity="center_vertical"
             android:maxLines="1"
             android:minHeight="?attr/actionBarSize"
-            android:text="@string/title_activity_obs_list_view_flexible_space_with_image"
-            android:textColor="@android:color/white"
-            android:textSize="20sp" />
+            android:text="@string/title_activity_main"
+            android:textAppearance="@style/TextAppearance.AppCompat.Title"
+            android:textColor="@android:color/white" />
 
         <View
             android:layout_width="match_parent"

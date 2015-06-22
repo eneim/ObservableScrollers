@@ -72,15 +72,14 @@ public class ObsListViewFlexibleSpaceWithImageActivity extends BaseActivity {
                 float parallax = Math.min(0, Math.max(-getMaxTranslationYRange(), (float) -scrollY / 2));
                 ViewCompat.setTranslationY(mImageView, parallax);
 
-                float scale = 1 + Math.min(MAX_TEXT_SCALE_DELTA, Math.max(0.0f,
+                float scale = 1 + MAX_TEXT_SCALE_DELTA * Math.min(1.0f, Math.max(0.0f,
                         (getMaxTranslationYRange() - (float) scrollY) / getMaxTranslationYRange()));
-
                 ViewCompat.setScaleX(mTitleView, scale);
                 ViewCompat.setScaleY(mTitleView, scale);
 
                 // Translate title text
                 int maxTitleTranslationY = (int) (getMaxTransition() - mTitleView.getHeight() * scale);
-                float titleTranslationY = Math.min(getMaxTransition() - mTitleView.getHeight() * 1.3f,
+                float titleTranslationY = Math.min(getMaxTransition() - mTitleView.getHeight() * (1 + MAX_TEXT_SCALE_DELTA),
                         maxTitleTranslationY - scrollY);
                 ViewCompat.setTranslationY(mTitleView, titleTranslationY);
             }
