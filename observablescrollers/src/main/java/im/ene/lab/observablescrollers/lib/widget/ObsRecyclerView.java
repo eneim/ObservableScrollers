@@ -129,6 +129,9 @@ public class ObsRecyclerView extends RecyclerView implements Scrollable {
 
     @Override
     public void scrollVerticallyBy(int y) {
+        if (y == 0)
+            return;
+
         scrollBy(0, y);
     }
 }
