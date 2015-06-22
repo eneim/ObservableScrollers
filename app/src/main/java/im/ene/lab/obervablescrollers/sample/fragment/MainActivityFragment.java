@@ -10,6 +10,7 @@ import android.view.ViewGroup;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import im.ene.lab.obervablescrollers.sample.R;
+import im.ene.lab.obervablescrollers.sample.ui.AOSLListViewFlexibleSpaceWithImageActivity;
 import im.ene.lab.obervablescrollers.sample.ui.ObsListViewActivity;
 import im.ene.lab.obervablescrollers.sample.ui.ObsListViewFlexibleSpaceWithImageActivity;
 import im.ene.lab.obervablescrollers.sample.ui.ObsRecyclerViewActivity;
@@ -56,6 +57,12 @@ public class MainActivityFragment extends Fragment {
     @OnClick(R.id.open_listview_flexspace_image)
     void openListViewFlexImage() {
         Intent intent = new Intent(getActivity(), ObsListViewFlexibleSpaceWithImageActivity.class);
+        startActivity(intent);
+    }
+
+    @OnClick(R.id.open_aosl_listview_flexspace_image)
+    void openAoslListViewFlexImage() {
+        Intent intent = new Intent(getActivity(), AOSLListViewFlexibleSpaceWithImageActivity.class);
         startActivity(intent);
     }
 }

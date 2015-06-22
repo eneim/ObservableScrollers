@@ -68,6 +68,7 @@ public class ObsListViewFlexibleSpaceWithImageActivity extends BaseActivity {
         mListView.setOnScrollObservedListener(new OnScrollObservedListener() {
             @Override
             public void onScrollChanged(Scrollable scroller, int dx, int dy) {
+                // !Important I get the current scrollY here
                 int scrollY = scroller.getVerticalScrollOffset();
 
                 float transition = Math.min(0, Math.max(-getMaxTranslationYRange(), -scrollY));

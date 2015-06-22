@@ -24,4 +24,8 @@ Quam libero nulla netus eu porta curae, ut nulla bibendum facilisis et urna sed,
     <string name="title_activity_obs_list_view_flexible_space_with_image">ObsListView - Flexible
         space with Image
     </string>
+
+    <string name="title_activity_aosl_list_view_flexible_space_with_image">AOSL ListView - Flexible
+        space with Image
+    </string>
 </resources>

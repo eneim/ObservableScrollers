@@ -49,6 +49,15 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="im.ene.lab.obervablescrollers.sample.ui.MainActivity" />
         </activity>
+
+        <activity
+            android:name=".ui.AOSLListViewFlexibleSpaceWithImageActivity"
+            android:label="@string/title_activity_obs_list_view_flexible_space_with_image"
+            android:parentActivityName=".ui.MainActivity" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="im.ene.lab.obervablescrollers.sample.ui.MainActivity" />
+        </activity>
     </application>
 
 </manifest>
