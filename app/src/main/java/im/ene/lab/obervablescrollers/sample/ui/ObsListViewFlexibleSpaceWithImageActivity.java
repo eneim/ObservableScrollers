@@ -40,10 +40,12 @@ public class ObsListViewFlexibleSpaceWithImageActivity extends BaseActivity {
         ButterKnife.inject(this);
 
         mMaxTransition = getResources().getDimensionPixelSize(R.dimen.flexible_space_image_height);
+
+        // this activity doesn't use an actionbar/toolbar, we use a static height instead
         mActionBarHeight = UIUtil.getActionbarToolbarHeight(this);
     }
 
-    DummyDynamicListViewAdapter dummyListViewAdapter;
+    private DummyDynamicListViewAdapter dummyListViewAdapter;
 
     private final float MAX_TEXT_SCALE_DELTA = 0.3f;
 
@@ -51,11 +53,15 @@ public class ObsListViewFlexibleSpaceWithImageActivity extends BaseActivity {
     protected void onPostCreate(Bundle savedInstanceState) {
         super.onPostCreate(savedInstanceState);
 
+        // set this only once, nothing to do with RTL layout, please DIY
         ViewCompat.setPivotX(mTitleView, 0);
         ViewCompat.setPivotY(mTitleView, 0);
 
+        // this Adapter is not that good, I just add the dynamic height change to its children view
         dummyListViewAdapter = new DummyDynamicListViewAdapter(this);
         mListView.setAdapter(dummyListViewAdapter);
+
+        // update paddingTop to match the whole layout
         mListView.setPadding(mListView.getPaddingLeft(), (int) (mListView.getPaddingTop() + getMaxTransition()),
                 mListView.getPaddingRight(), mListView.getPaddingBottom());
 
@@ -74,6 +80,8 @@ public class ObsListViewFlexibleSpaceWithImageActivity extends BaseActivity {
                 float parallax = Math.min(0, Math.max(-getMaxTranslationYRange(), (float) -scrollY / 2));
                 ViewCompat.setTranslationY(mImageView, parallax);
 
+                // originally borrowed from https://github.com/ksoichiro/Android-ObservableScrollView
+                // but I change it to a multiply to smoothly transiting/scaling the textview
                 float scale = 1 + MAX_TEXT_SCALE_DELTA * Math.min(1.0f, Math.max(0.0f,
                         (getMaxTranslationYRange() - (float) scrollY) / getMaxTranslationYRange()));
                 ViewCompat.setScaleX(mTitleView, scale);
@@ -88,7 +96,7 @@ public class ObsListViewFlexibleSpaceWithImageActivity extends BaseActivity {
 
             @Override
             public void onScrollStateChanged(Scrollable scroller, Scrollable.ScrollState newState) {
-
+                // no magic happens here
             }
         });
 
