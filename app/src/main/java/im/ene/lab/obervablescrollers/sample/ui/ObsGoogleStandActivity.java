@@ -59,19 +59,34 @@ public class ObsGoogleStandActivity extends BaseActivity implements OnScrollObse
         mViewPager.setAdapter(mAdapter);
         mTabs.setViewPager(mViewPager);
         mTabs.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+
+            private int currentItemPosition = 0;
+
+            private int expectedNextPosition = 0;
+
             @Override
             public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+                if (currentItemPosition == position) {
+                    if (positionOffset < 0.5) {
+                        expectedNextPosition = position + 1;
+                    }
+                } else {
+                    if (positionOffset > 0.5) {
+                        expectedNextPosition = position;
+                    }
+                }
 
+                Fragment expectedNextItem = mAdapter.getRegisteredFragment(expectedNextPosition);
+                if (expectedNextItem != null && expectedNextItem instanceof ObsFragment) {
+                    Scrollable currentScrollable = ((ObsFragment) expectedNextItem).getScrollable();
+                    currentScrollable.scrollVerticallyBy(mCurrentScrollY -
+                            currentScrollable.getVerticalScrollOffset());
+                }
             }
 
             @Override
             public void onPageSelected(int position) {
-                Fragment currentItem = mAdapter.getRegisteredFragment(position);
-                if (currentItem != null && currentItem instanceof ObsFragment) {
-                    Scrollable currentScrollable = ((ObsFragment) currentItem).getScrollable();
-                    currentScrollable.scrollVerticallyBy(mCurrentScrollY -
-                            currentScrollable.getVerticalScrollOffset());
-                }
+                currentItemPosition = position;
             }
 
             @Override
