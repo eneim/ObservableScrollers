@@ -1,3 +1,5 @@
 /build
 
 .coveralls.yml
+observablescrollers.iml
+proguard-rules.pro
