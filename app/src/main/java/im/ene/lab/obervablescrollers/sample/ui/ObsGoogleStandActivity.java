@@ -76,6 +76,11 @@ public class ObsGoogleStandActivity extends BaseActivity implements OnScrollObse
                     }
                 }
 
+                // I would like to scroll the "adjacent page" here to prevent them from
+                // visible during the scrolling.
+                // in ObsRecyclerView#getVerticalScrollOffset() I disallow the scroll by checking the
+                // vertical scroll value so there is no need to worry about to many method calls.
+                // I'm aware of the trade off when asking it to call many time. Please give me a better call here
                 Fragment expectedNextItem = mAdapter.getRegisteredFragment(expectedNextPosition);
                 if (expectedNextItem != null && expectedNextItem instanceof ObsFragment) {
                     Scrollable currentScrollable = ((ObsFragment) expectedNextItem).getScrollable();
