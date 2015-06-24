@@ -1,12 +1,18 @@
 package im.ene.lab.obervablescrollers.sample.ui;
 
 import android.animation.ValueAnimator;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.support.v4.view.ViewCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.text.Spannable;
+import android.text.SpannableString;
+import android.util.TypedValue;
 
 import im.ene.lab.obervablescrollers.sample.R;
+import im.ene.lab.obervablescrollers.sample.widget.AlphaForegroundColorSpan;
 import im.ene.lab.observablescrollers.lib.BuildConfig;
 import im.ene.lab.observablescrollers.lib.util.LogHelper;
 
@@ -19,11 +25,37 @@ public class BaseActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         LogHelper.debugMode(true);
+
+        mSpannableString = new SpannableString(getTitle());
+        mAlphaForegroundColorSpan = new AlphaForegroundColorSpan(Color.WHITE);
+
+        mToolbarColorDrawable = new ColorDrawable(mTypedValue.data);
+        mThemedToolBarColor = mToolbarColorDrawable.getColor();
+        mNormalToolBarColor = mThemedToolBarColor;
+
+        getTheme().resolveAttribute(R.attr.colorPrimaryDark, mTypedValue, true);
+        mStatucBarColorDrawable = new ColorDrawable(mTypedValue.data);
+        mThemedStatusBarColor = mStatucBarColorDrawable.getColor();
+        mNormalStatusBarColor = mThemedStatusBarColor;
+
     }
 
     protected Toolbar mToolbar;
 
     protected int mToolbarHeight;
+
+    private final TypedValue mTypedValue = new TypedValue();
+
+    private ColorDrawable mToolbarColorDrawable;
+    private int mThemedStatusBarColor;
+    private int mNormalStatusBarColor;
+
+    private ColorDrawable mStatucBarColorDrawable;
+    private int mThemedToolBarColor;
+    private int mNormalToolBarColor;
+
+    private AlphaForegroundColorSpan mAlphaForegroundColorSpan;
+    private SpannableString mSpannableString;
 
     protected Toolbar getActionbarToolbar() {
         if (mToolbar == null) {
@@ -83,5 +115,18 @@ public class BaseActivity extends AppCompatActivity {
     protected boolean isToolbarFullyHiddenOrShown() {
         return ViewCompat.getTranslationY(getActionbarToolbar()) >= 0 ||
                 ViewCompat.getTranslationY(getActionbarToolbar()) <= -getMaxTranslationYRange();
+    }
+
+    protected void setTitleAlpha(float alpha) {
+        if (mSpannableString == null || mAlphaForegroundColorSpan == null)
+            return;
+        mAlphaForegroundColorSpan.setAlpha(alpha);
+        mSpannableString.setSpan(mAlphaForegroundColorSpan, 0,
+                mSpannableString.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+        setTitle(mSpannableString);
+    }
+
+    protected void showHideStatusBar() {
+
     }
 }

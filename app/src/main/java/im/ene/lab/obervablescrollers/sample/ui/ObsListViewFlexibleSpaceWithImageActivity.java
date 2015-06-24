@@ -31,7 +31,6 @@ public class ObsListViewFlexibleSpaceWithImageActivity extends BaseActivity {
     View mListBackground;
 
     private int mMaxTransition;
-    private int mActionBarHeight;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,7 +41,7 @@ public class ObsListViewFlexibleSpaceWithImageActivity extends BaseActivity {
         mMaxTransition = getResources().getDimensionPixelSize(R.dimen.flexible_space_image_height);
 
         // this activity doesn't use an actionbar/toolbar, we use a static height instead
-        mActionBarHeight = UIUtil.getActionbarToolbarHeight(this);
+        mToolbarHeight = UIUtil.getActionbarToolbarHeight(this);
     }
 
     private DummyDynamicListViewAdapter dummyListViewAdapter;
@@ -105,7 +104,7 @@ public class ObsListViewFlexibleSpaceWithImageActivity extends BaseActivity {
 
     @Override
     protected float getMinTransition() {
-        return mActionBarHeight;
+        return mToolbarHeight;
     }
 
     @Override
