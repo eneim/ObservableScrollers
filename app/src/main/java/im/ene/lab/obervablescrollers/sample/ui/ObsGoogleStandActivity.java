@@ -19,7 +19,7 @@ import com.astuetz.PagerSlidingTabStrip;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import im.ene.lab.obervablescrollers.sample.R;
-import im.ene.lab.obervablescrollers.sample.fragment.DummyScrollViewFragment;
+import im.ene.lab.obervablescrollers.sample.fragment.DummyRecyclerViewFragment;
 import im.ene.lab.obervablescrollers.sample.util.UIUtil;
 import im.ene.lab.observablescrollers.lib.adapter.SmartFragmentStatePagerAdapter;
 import im.ene.lab.observablescrollers.lib.fragment.ObsFragment;
@@ -289,13 +289,13 @@ public class ObsGoogleStandActivity extends BaseActivity implements OnScrollObse
 //                fragment = DummyRecyclerViewFragment.newInstance();
 //            else
 //                fragment = DummyScrollViewFragment.newInstance();
-            fragment = DummyScrollViewFragment.newInstance();
+            fragment = DummyRecyclerViewFragment.newInstance();
             return fragment;
         }
 
         @Override
         public int getCount() {
-            return 2    ;
+            return titles.length;
         }
 
         @Override
