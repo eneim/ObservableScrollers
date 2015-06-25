@@ -134,4 +134,10 @@ public class ObsRecyclerView extends RecyclerView implements Scrollable {
 
         scrollBy(0, y);
     }
+
+    @Override
+    public ScrollState getCurrentScrollState() {
+        return mLastScrollState;
+    }
+
 }

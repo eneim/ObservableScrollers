@@ -57,7 +57,6 @@ public class ObsScrollView extends ScrollView implements Scrollable {
     }
 
     /**
-     *
      * @param listener
      */
     @Override
@@ -66,7 +65,6 @@ public class ObsScrollView extends ScrollView implements Scrollable {
     }
 
     /**
-     *
      * @param newState
      */
     void reportScrollStateChange(ScrollState newState) {
@@ -178,5 +176,10 @@ public class ObsScrollView extends ScrollView implements Scrollable {
     @Override
     public void scrollVerticallyBy(int y) {
         scrollBy(0, y);
+    }
+
+    @Override
+    public ScrollState getCurrentScrollState() {
+        return mLastScrollState;
     }
 }

@@ -56,4 +56,9 @@ public class ObsGridView extends GridView implements Scrollable {
     public void scrollVerticallyBy(int y) {
 
     }
+
+    @Override
+    public ScrollState getCurrentScrollState() {
+        return ScrollState.SCROLL_STATE_IDLE;
+    }
 }

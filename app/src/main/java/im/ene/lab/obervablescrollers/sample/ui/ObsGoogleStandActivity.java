@@ -1,5 +1,6 @@
 package im.ene.lab.obervablescrollers.sample.ui;
 
+import android.animation.Animator;
 import android.animation.ValueAnimator;
 import android.annotation.TargetApi;
 import android.graphics.drawable.ColorDrawable;
@@ -145,9 +146,9 @@ public class ObsGoogleStandActivity extends BaseActivity implements OnScrollObse
                 // I'm aware of the trade off when asking it to call many time. Please give me a better call here
                 Fragment expectedNextItem = mAdapter.getRegisteredFragment(expectedNextPosition);
                 if (expectedNextItem != null && expectedNextItem instanceof ObsFragment) {
-                    Scrollable currentScrollable = ((ObsFragment) expectedNextItem).getScrollable();
-                    currentScrollable.scrollVerticallyBy(mCurrentScrollY -
-                            currentScrollable.getVerticalScrollOffset());
+                    Scrollable expectedNextScroller = ((ObsFragment) expectedNextItem).getScrollable();
+                    expectedNextScroller.scrollVerticallyBy(mCurrentScrollY -
+                            expectedNextScroller.getVerticalScrollOffset());
                 }
             }
 
@@ -264,7 +265,11 @@ public class ObsGoogleStandActivity extends BaseActivity implements OnScrollObse
                     float nextPagerTrans = factor * nextPagerY + (1 - factor) * currentPagerTrans;
                     ViewCompat.setTranslationY(mPagerHeader, nextPagerTrans);
                 }
-            }, null);
+            }, new UIUtil.AnimatorEndListener() {
+                @Override
+                public void end(Animator animator) {
+                }
+            });
         }
     }
 
@@ -295,7 +300,7 @@ public class ObsGoogleStandActivity extends BaseActivity implements OnScrollObse
 
         @Override
         public int getCount() {
-            return titles.length;
+            return 2    ;
         }
 
         @Override

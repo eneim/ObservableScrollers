@@ -142,4 +142,9 @@ public class ObsListView extends ListView implements Scrollable {
     public void scrollVerticallyBy(int y) {
         smoothScrollBy(y, SMOOTHLY_SCROLL_DURATION);
     }
+
+    @Override
+    public ScrollState getCurrentScrollState() {
+        return mLastScrollState;
+    }
 }

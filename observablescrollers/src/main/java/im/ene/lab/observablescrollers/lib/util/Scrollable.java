@@ -32,6 +32,12 @@ public interface Scrollable {
     public void scrollVerticallyBy(int y);
 
     /**
+     *
+     * @return
+     */
+    public ScrollState getCurrentScrollState();
+
+    /**
      * Created by eneim on 5/29/15.
      */
     enum ScrollState {
