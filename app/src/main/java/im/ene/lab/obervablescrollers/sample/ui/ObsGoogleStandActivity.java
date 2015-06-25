@@ -243,7 +243,7 @@ public class ObsGoogleStandActivity extends BaseActivity implements OnScrollObse
         if (newState != Scrollable.ScrollState.SCROLL_STATE_IDLE)
             return;
 
-        if (!isToolbarFullyHiddenOrShown()) {
+        if (!isCollapseViewTotallyShownOrHidden()) {
             final float currentToolbarTrans = ViewCompat.getTranslationY(getActionbarToolbar());
             final float currentPagerTrans = ViewCompat.getTranslationY(mPagerHeader);
             final float nextPagerY = scroller.getVerticalScrollOffset() > mPagerHeaderHeight ? -mPagerHeaderHeight : -mPagerHeaderHeight + mToolbarHeight + mTabs.getHeight();
@@ -268,7 +268,7 @@ public class ObsGoogleStandActivity extends BaseActivity implements OnScrollObse
     }
 
     @Override
-    protected boolean isToolbarFullyHiddenOrShown() {
+    protected boolean isCollapseViewTotallyShownOrHidden() {
         return ViewCompat.getTranslationY(getActionbarToolbar()) >= 0 ||
                 ViewCompat.getTranslationY(getActionbarToolbar()) <= -mToolbarHeight - mTabs.getHeight();
     }
