@@ -3,10 +3,10 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/ObservableScrollers.iml" filepath="$PROJECT_DIR$/ObservableScrollers.iml" />
-      <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
       <module fileurl="file://$PROJECT_DIR$/../PagerSlidingTabStrip/library/library.iml" filepath="$PROJECT_DIR$/../PagerSlidingTabStrip/library/library.iml" />
       <module fileurl="file://$PROJECT_DIR$/observablescrollers/observablescrollers.iml" filepath="$PROJECT_DIR$/observablescrollers/observablescrollers.iml" />
       <module fileurl="file://$PROJECT_DIR$/../PagerSlidingTabStrip/pagerslidingtabstrip.iml" filepath="$PROJECT_DIR$/../PagerSlidingTabStrip/pagerslidingtabstrip.iml" />
+      <module fileurl="file://$PROJECT_DIR$/sample/sample.iml" filepath="$PROJECT_DIR$/sample/sample.iml" />
     </modules>
   </component>
 </project>
