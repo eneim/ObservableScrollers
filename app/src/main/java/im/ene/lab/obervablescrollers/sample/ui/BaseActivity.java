@@ -112,7 +112,7 @@ public class BaseActivity extends AppCompatActivity {
         return mToolbarHeight;
     }
 
-    protected boolean isToolbarFullyHiddenOrShown() {
+    protected boolean isCollapseViewTotallyShownOrHidden() {
         return ViewCompat.getTranslationY(getActionbarToolbar()) >= 0 ||
                 ViewCompat.getTranslationY(getActionbarToolbar()) <= -getMaxTranslationYRange();
     }

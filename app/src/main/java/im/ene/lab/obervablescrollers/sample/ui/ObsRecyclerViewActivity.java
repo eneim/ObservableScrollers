@@ -46,7 +46,7 @@ public class ObsRecyclerViewActivity extends BaseActivity {
 
             @Override
             public void onScrollStateChanged(Scrollable scroller, Scrollable.ScrollState newState) {
-                if (isToolbarFullyHiddenOrShown())
+                if (isCollapseViewTotallyShownOrHidden())
                     return;
 
                 if (newState == Scrollable.ScrollState.SCROLL_STATE_IDLE) {
