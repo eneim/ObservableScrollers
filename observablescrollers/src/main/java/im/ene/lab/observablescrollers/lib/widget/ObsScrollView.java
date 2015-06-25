@@ -165,7 +165,7 @@ public class ObsScrollView extends ScrollView implements Scrollable {
 
     @Override
     public int getVerticalScrollOffset() {
-        return getScrollY();
+        return mCurrentScrollY;
     }
 
     @Override

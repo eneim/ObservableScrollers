@@ -19,12 +19,10 @@ import com.astuetz.PagerSlidingTabStrip;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import im.ene.lab.obervablescrollers.sample.R;
-import im.ene.lab.obervablescrollers.sample.fragment.DummyRecyclerViewFragment;
 import im.ene.lab.obervablescrollers.sample.fragment.DummyScrollViewFragment;
 import im.ene.lab.obervablescrollers.sample.util.UIUtil;
 import im.ene.lab.observablescrollers.lib.adapter.SmartFragmentStatePagerAdapter;
 import im.ene.lab.observablescrollers.lib.fragment.ObsFragment;
-import im.ene.lab.observablescrollers.lib.util.LogHelper;
 import im.ene.lab.observablescrollers.lib.util.OnScrollObservedListener;
 import im.ene.lab.observablescrollers.lib.util.Scrollable;
 
@@ -147,8 +145,9 @@ public class ObsGoogleStandActivity extends BaseActivity implements OnScrollObse
                 Fragment expectedNextItem = mAdapter.getRegisteredFragment(expectedNextPosition);
                 if (expectedNextItem != null && expectedNextItem instanceof ObsFragment) {
                     Scrollable expectedNextScroller = ((ObsFragment) expectedNextItem).getScrollable();
-                    expectedNextScroller.scrollVerticallyBy(mCurrentScrollY -
-                            expectedNextScroller.getVerticalScrollOffset());
+                    int scrollY = mCurrentScrollY -
+                            expectedNextScroller.getVerticalScrollOffset();
+                    expectedNextScroller.scrollVerticallyBy(scrollY);
                 }
             }
 
@@ -174,14 +173,11 @@ public class ObsGoogleStandActivity extends BaseActivity implements OnScrollObse
     public void onScrollChanged(Scrollable scroller, int dx, int dy) {
         float scrollY = scroller.getVerticalScrollOffset();
         float pagerVerticalChange = ViewCompat.getTranslationY(mPagerHeader);
-        float pagerHeaderTransition = Math.min(0, Math.max(-mPagerHeaderHeight, pagerVerticalChange - dy));
 
+        float pagerHeaderTransition = Math.min(0, Math.max(-mPagerHeaderHeight, pagerVerticalChange - dy));
         if (scrollY > mBaseScrollMount)
             pagerHeaderTransition = Math.min(pagerHeaderTransition, -mBaseScrollMount);
-
-        LogHelper.d("pager", pagerHeaderTransition + " | " + pagerVerticalChange + " | " + scrollY);
         ViewCompat.setTranslationY(mPagerHeader, pagerHeaderTransition);
-        // Math.max(-A,
 
         float headerImageParallax = Math.min(0, Math.max(-mMainHeaderHeight, -scrollY / 2));
         ViewCompat.setTranslationY(mMainHeader, headerImageParallax);
@@ -252,13 +248,11 @@ public class ObsGoogleStandActivity extends BaseActivity implements OnScrollObse
             final float currentPagerTrans = ViewCompat.getTranslationY(mPagerHeader);
             final float nextPagerY = scroller.getVerticalScrollOffset() > mPagerHeaderHeight ? -mPagerHeaderHeight : -mPagerHeaderHeight + mToolbarHeight + mTabs.getHeight();
             final float nextToolbarY = nextPagerY + mBaseScrollMount;
-
-            // nextPagerY = currentToolbarTrans < -PagerHeaderHeight + mToolbarHeight ? -PagerHeaderHeight : -PagerHeaderHeight + mToolbarHeight + mTabs.getHeight();
-
             UIUtil.animate(mToolbarAnimator, new ValueAnimator.AnimatorUpdateListener() {
                 @Override
                 public void onAnimationUpdate(ValueAnimator animation) {
                     float factor = (float) animation.getAnimatedValue();
+
                     float nextTrans = factor * nextToolbarY + (1 - factor) * currentToolbarTrans;
                     ViewCompat.setTranslationY(getActionbarToolbar(), nextTrans);
 
@@ -291,10 +285,11 @@ public class ObsGoogleStandActivity extends BaseActivity implements OnScrollObse
         @Override
         public Fragment getItem(int position) {
             Fragment fragment;
-            if (position % 3 == 0)
-                fragment = DummyRecyclerViewFragment.newInstance();
-            else
-                fragment = DummyScrollViewFragment.newInstance();
+//            if (position % 2 == 0)
+//                fragment = DummyRecyclerViewFragment.newInstance();
+//            else
+//                fragment = DummyScrollViewFragment.newInstance();
+            fragment = DummyScrollViewFragment.newInstance();
             return fragment;
         }
 
