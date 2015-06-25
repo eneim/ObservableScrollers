@@ -2,4 +2,4 @@ def pagerSlidingTabStrip = file('../../Android/PagerSlidingTabStrip')
 def rootProjectDescriptor = settings.rootProject
 settings.createProjectDescriptor(rootProjectDescriptor, 'pagerslidingtabstrip', pagerSlidingTabStrip)
 
-include ':sample', ':observablescrollers', ':pagerslidingtabstrip:library'
+include ':sample', ':pagerslidingtabstrip:library', ':observablescrollers'
