@@ -109,6 +109,8 @@ public class ObsGoogleStandActivity extends BaseActivity implements OnScrollObse
         mNormalStatusBarColor = mThemedStatusBarColor;
 
         mTransitionColorDrawable = mToolbarColorDrawable;
+
+        mTitles = getResources().getStringArray(R.array.item_titles);
     }
 
     @Override
@@ -116,7 +118,6 @@ public class ObsGoogleStandActivity extends BaseActivity implements OnScrollObse
         super.onPostCreate(savedInstanceState);
         mTabs.getViewTreeObserver().addOnGlobalLayoutListener(tabViewGlobalLayoutListener);
 
-        mTitles = getResources().getStringArray(R.array.item_titles);
         final ViewPagerAdapter mAdapter = new ViewPagerAdapter(getSupportFragmentManager(), mTitles);
         mViewPager.setAdapter(mAdapter);
         mTabs.setViewPager(mViewPager);

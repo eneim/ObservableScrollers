@@ -37,9 +37,9 @@
         <RelativeLayout
             android:id="@+id/pager_header"
             android:layout_width="match_parent"
-            android:background="?attr/colorPrimary"
             android:layout_height="@dimen/google_play_header_middle"
-            android:layout_gravity="top">
+            android:layout_gravity="top"
+            android:background="?attr/colorPrimary">
 
             <ImageView
                 android:id="@+id/header_thumbnail"
@@ -54,9 +54,13 @@
                 android:layout_height="48dp"
                 android:layout_alignParentBottom="true"
                 android:background="?attr/colorAccent"
+                android:paddingLeft="24dp"
+                android:paddingRight="24dp"
                 app:pstsDividerColor="@android:color/transparent"
+                app:pstsDividerWidth="16dp"
                 app:pstsIndicatorColor="@android:color/white"
-                app:pstsPaddingMiddle="true"
+                app:pstsPaddingMiddle="false"
+                app:pstsTabPaddingLeftRight="24dp"
                 app:pstsTabTextAllCaps="true"
                 app:pstsTabTextColor="@color/tab_text_color" />
         </RelativeLayout>
