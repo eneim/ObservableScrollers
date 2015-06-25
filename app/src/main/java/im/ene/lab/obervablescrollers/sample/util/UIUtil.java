@@ -9,6 +9,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Build;
+import android.support.v4.view.ViewCompat;
 import android.util.TypedValue;
 import android.view.View;
 
@@ -44,7 +45,7 @@ public class UIUtil {
         return result;
     }
 
-    public static void setPaddingAnimation(final View view, final int newPaddingLeft, final int newPaddingRight, Animator.AnimatorListener listener) {
+    public static void setPaddingAnimation(final View view, final int newPaddingLeft, final int newPaddingRight, AnimatorEndListener listener) {
         final int oldPaddingLeft = view.getPaddingLeft();
         final int oldPaddingRight = view.getPaddingRight();
 
@@ -52,7 +53,7 @@ public class UIUtil {
             return;
         }
 
-        ValueAnimator animator = ValueAnimator.ofFloat(1, 0).setDuration(250);
+        final ValueAnimator animator = ValueAnimator.ofFloat(1, 0).setDuration(250);
         animator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
 
             @Override
@@ -69,10 +70,16 @@ public class UIUtil {
 
         if (listener != null)
             animator.addListener(listener);
-        animator.start();
+
+        view.post(new Runnable() {
+            @Override
+            public void run() {
+                animator.start();
+            }
+        });
     }
 
-    public static void setAlphaAnimation(final ColorDrawable colorDrawable, int toAlpha, final View... views) {
+    public static void setAlphaAnimation(final ColorDrawable colorDrawable, int toAlpha, final View view) {
         final int currentAlpha = colorDrawable.getAlpha();
         if (currentAlpha == toAlpha)
             return;
@@ -83,8 +90,7 @@ public class UIUtil {
             public void onAnimationUpdate(ValueAnimator animation) {
                 int nextAlpha = (int) animation.getAnimatedValue();
                 colorDrawable.setAlpha(nextAlpha);
-                for (View view : views)
-                    view.setBackground(colorDrawable);
+                view.setBackground(colorDrawable);
             }
         });
 
@@ -111,5 +117,57 @@ public class UIUtil {
         });
 
         animator.start();
+    }
+
+    public static void animateTransitionY(final View view, float toY) {
+        float fromY = ViewCompat.getTranslationY(view);
+        if (fromY == toY)
+            return;
+        ValueAnimator animator = ValueAnimator.ofFloat(fromY, toY).setDuration(200);
+        animator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+            @Override
+            public void onAnimationUpdate(ValueAnimator animation) {
+                float translationY = (float) animation.getAnimatedValue();
+                ViewCompat.setTranslationY(view, translationY);
+            }
+        });
+
+        animator.start();
+    }
+
+    public static void animate(ValueAnimator animator, ValueAnimator.AnimatorUpdateListener updateListener, AnimatorEndListener listener) {
+        if (animator != null)
+            animator.cancel();
+        animator = ValueAnimator.ofFloat(0.0f, 1.0f).setDuration(200);
+        if (updateListener != null)
+            animator.addUpdateListener(updateListener);
+        if (listener != null)
+            animator.addListener(listener);
+        animator.start();
+    }
+
+    public static abstract class AnimatorEndListener implements Animator.AnimatorListener {
+
+        @Override
+        public void onAnimationEnd(Animator animator) {
+            end(animator);
+        }
+
+        public abstract void end(Animator animator);
+
+        @Override
+        public void onAnimationStart(Animator animation) {
+
+        }
+
+        @Override
+        public void onAnimationCancel(Animator animation) {
+
+        }
+
+        @Override
+        public void onAnimationRepeat(Animator animation) {
+
+        }
     }
 }

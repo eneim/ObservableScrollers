@@ -1,9 +1,8 @@
-<android.support.design.internal.ScrimInsetsFrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:fitsSystemWindows="true"
-    app:insetForeground="?attr/colorPrimaryDark">
+    android:fitsSystemWindows="true">
 
     <FrameLayout
         android:id="@+id/main_header"
@@ -38,6 +37,7 @@
         <RelativeLayout
             android:id="@+id/pager_header"
             android:layout_width="match_parent"
+            android:background="?attr/colorPrimary"
             android:layout_height="@dimen/google_play_header_middle"
             android:layout_gravity="top">
 
@@ -53,7 +53,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="48dp"
                 android:layout_alignParentBottom="true"
-                android:background="@android:color/transparent"
+                android:background="?attr/colorAccent"
                 app:pstsDividerColor="@android:color/transparent"
                 app:pstsIndicatorColor="@android:color/white"
                 app:pstsPaddingMiddle="true"
@@ -65,4 +65,4 @@
 
     </FrameLayout>
 
-</android.support.design.internal.ScrimInsetsFrameLayout>
+</FrameLayout>

@@ -1,6 +1,7 @@
 package im.ene.lab.obervablescrollers.sample.ui;
 
 import android.animation.Animator;
+import android.animation.ValueAnimator;
 import android.annotation.TargetApi;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Build;
@@ -50,14 +51,24 @@ public class ObsGoogleStandActivity extends BaseActivity implements OnScrollObse
     private int mThemedToolBarColor;
     private int mNormalToolBarColor;
 
+    private int mCurrentScrollY;
+
+    private final TypedValue mTypedValue = new TypedValue();
+    private ColorDrawable mToolbarColorDrawable;
+    private ColorDrawable mStatusbarColorDrawable;
+    private ColorDrawable mTransitionColorDrawable;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-//        getWindow().addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
-
         setContentView(R.layout.activity_obs_google_stand);
-//        getActionbarToolbar().setPadding(0, UIUtil.getStatusBarHeight(this), 0, 0);
-//        getActionbarToolbar().getLayoutParams().height = mToolbarHeight + UIUtil.getStatusBarHeight(this);
+        getActionbarToolbar();
+
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+            getSupportActionBar().setHomeButtonEnabled(true);
+            getSupportActionBar().setDisplayShowHomeEnabled(true);
+        }
 
         mMainHeaderHeight = getResources().getDimensionPixelSize(R.dimen.google_play_header_large);
         mPagerHeaderHeight = getResources().getDimensionPixelSize(R.dimen.google_play_header_middle);
@@ -76,28 +87,15 @@ public class ObsGoogleStandActivity extends BaseActivity implements OnScrollObse
 
     }
 
-    private int mCurrentScrollY;
-
-    private final TypedValue mTypedValue = new TypedValue();
-    private ColorDrawable mToolbarColorDrawable;
-    private ColorDrawable mStatusbarColorDrawable;
-    private ColorDrawable mTransitionColorDrawable;
-
     @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
     private void setToolbarAlpha(float alpha) {
         UIUtil.setAlphaAnimation(mTransitionColorDrawable, (int) (alpha * 255), mPagerHeader);
-//        UIUtil.setStatusbarAlphaAnimation(mStatusbarColorDrawable, (int) (alpha * 255), ObsGoogleStandActivity.this);
-//        ViewCompat.animate(getActionbarToolbar()).alpha(alpha).setDuration(200).start();
     }
 
     @Override
     protected void onPostCreate(Bundle savedInstanceState) {
         super.onPostCreate(savedInstanceState);
         ButterKnife.inject(this);
-
-//        UIUtil.setAlphaAnimation(mToolbarColor, 0, getActionbarToolbar());
-
-        setToolbarAlpha(0.0f);
 
         mTitles = getResources().getStringArray(R.array.item_titles);
         final ViewPagerAdapter mAdapter = new ViewPagerAdapter(getSupportFragmentManager(), mTitles);
@@ -106,7 +104,6 @@ public class ObsGoogleStandActivity extends BaseActivity implements OnScrollObse
         mTabs.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
 
             private int currentItemPosition = 0;
-
             private int expectedNextPosition = 0;
 
             @Override
@@ -145,84 +142,108 @@ public class ObsGoogleStandActivity extends BaseActivity implements OnScrollObse
             }
 
         });
-
     }
+
+    private ValueAnimator mToolbarAnimator, mHeaderAnimator, mTabAnimator;
 
     @Override
     public void onScrollChanged(Scrollable scroller, int dx, int dy) {
         float scrollY = scroller.getVerticalScrollOffset();
+        float pagerVerticalChange = ViewCompat.getTranslationY(mPagerHeader);
+
+        float pagerHeaderTransition = Math.min(0, Math.max(-mPagerHeaderHeight, pagerVerticalChange - dy));
+        ViewCompat.setTranslationY(mPagerHeader, pagerHeaderTransition);
 
         mCurrentScrollY = (int) scrollY;
-        float parallax = Math.min(0, Math.max(-mMainHeaderHeight, -scrollY / 2));
-        ViewCompat.setTranslationY(mMainHeader, parallax);
+        float headerImageParallax = Math.min(0, Math.max(-mMainHeaderHeight, -scrollY / 2));
+        ViewCompat.setTranslationY(mMainHeader, headerImageParallax);
 
-        float transition = Math.min(0, Math.max(-mPagerHeaderHeight, -scrollY));
-        ViewCompat.setTranslationY(mPagerHeader, transition);
+        float categoryIconAlpha = Math.min(1, Math.max(0, (scrollY * 2) / mPagerHeaderHeight));
+        ViewCompat.setAlpha(mThumbNail, 1.0f - categoryIconAlpha);
 
-        float alpha = Math.min(1, Math.max(0, (scrollY * 2) / mPagerHeaderHeight));
-        LogHelper.d("scrollY", scrollY + "");
-        ViewCompat.setAlpha(mThumbNail, 1.0f - alpha);
+        // mPagerHeaderHeight - mToolbarHeight - mTabs.getHeight <= scrollY
+        // Math.min(0, scrollY - (mPagerHeaderHeight - mToolbarHeight - mTabs.getHeight))
 
-        if ((mPagerHeaderHeight - scrollY) <= mToolbarHeight + mTabs.getHeight()) {
-            UIUtil.setPaddingAnimation(mTabs, mTabs.getTabPaddingLeftRight(), mTabs.getTabPaddingLeftRight(), new Animator.AnimatorListener() {
-                @Override
-                public void onAnimationStart(Animator animation) {
+        //  Math.max(-mToolbarHeight - mTabs.getHeight(), currentY - dy) < 0
+        //  but
+        //  transition + mPagerHeaderHeight - mToolbarHeight - mTabs.getHeight() > 0 --> 0
+        float toolbarTransition = Math.min(
+                0,
+                Math.max(
+                        -mToolbarHeight - mTabs.getHeight(),
+                        pagerHeaderTransition + mPagerHeaderHeight - mToolbarHeight - mTabs.getHeight()
+                )
+        );
 
-                }
+        ViewCompat.setTranslationY(getActionbarToolbar(), Math.max(pagerHeaderTransition, toolbarTransition));
 
-                @Override
-                public void onAnimationEnd(Animator animation) {
-                    mTabs.setPaddingMiddle(false);
-                }
+        if ((mPagerHeaderHeight - pagerVerticalChange) <= mToolbarHeight + mTabs.getHeight()) {
 
-                @Override
-                public void onAnimationCancel(Animator animation) {
+            final int oldPaddingLeft = mTabs.getPaddingLeft();
+            final int oldPaddingRight = mTabs.getPaddingRight();
 
-                }
+            if (oldPaddingLeft == mTabs.getTabPaddingLeftRight() && oldPaddingRight == mTabs.getTabPaddingLeftRight()) {
+                return;
+            }
 
-                @Override
-                public void onAnimationRepeat(Animator animation) {
-
-                }
-            });
-
-//            mTabs.setTabBackground(R.attr.colorPrimary);
-            setToolbarAlpha(1.0f);
-            float currTransY = ViewCompat.getTranslationY(getActionbarToolbar());
-            float transition_ = Math.min(getMinTransition(), Math.max(-getMaxTransition(), currTransY - dy));
-            ViewCompat.setTranslationY(getActionbarToolbar(), transition_);
+            UIUtil.animate(mTabAnimator,
+                    new ValueAnimator.AnimatorUpdateListener() {
+                        @Override
+                        public void onAnimationUpdate(ValueAnimator animation) {
+                            float factor = (float) animation.getAnimatedValue();
+                            int tempPaddingLeft = (int) (factor * mTabs.getTabPaddingLeftRight() + (1 - factor) * oldPaddingLeft);
+                            int tempPaddingRight = (int) (factor * mTabs.getTabPaddingLeftRight() + (1 - factor) * oldPaddingRight);
+                            mTabs.setPadding(tempPaddingLeft, mTabs.getPaddingTop(), tempPaddingRight, mTabs.getPaddingBottom());
+                        }
+                    }, new UIUtil.AnimatorEndListener() {
+                        @Override
+                        public void end(Animator animator) {
+                            mTabs.setPaddingMiddle(false);
+                            mTabs.scrollToChild(mViewPager.getCurrentItem(), 0);
+                        }
+                    });
         } else {
-            setToolbarAlpha(0.0f);
             if (!mTabs.isPaddingMiddle()) {
-                UIUtil.setPaddingAnimation(mTabs, mTabs.getPaddingLeftOnMiddle(), mTabs.getPaddingRightOnMiddle(), new Animator.AnimatorListener() {
-                    @Override
-                    public void onAnimationStart(Animator animation) {
-
-                    }
-
-                    @Override
-                    public void onAnimationEnd(Animator animation) {
-                        mTabs.setPaddingMiddle(true);
-                    }
-
-                    @Override
-                    public void onAnimationCancel(Animator animation) {
-
-                    }
-
-                    @Override
-                    public void onAnimationRepeat(Animator animation) {
-
-                    }
-                });
+                UIUtil.setPaddingAnimation(
+                        mTabs,
+                        mTabs.getPaddingLeftOnMiddle(), mTabs.getPaddingRightOnMiddle(),
+                        new UIUtil.AnimatorEndListener() {
+                            @Override
+                            public void end(Animator animator) {
+                                mTabs.setPaddingMiddle(true);
+                                mTabs.scrollToChild(mViewPager.getCurrentItem(), mTabs.getPaddingLeftOnMiddle());
+                            }
+                        });
             }
         }
+
     }
 
     @Override
     public void onScrollStateChanged(Scrollable scroller, Scrollable.ScrollState newState) {
         if (newState != Scrollable.ScrollState.SCROLL_STATE_IDLE)
             return;
+
+        if (!isToolbarFullyHiddenOrShown()) {
+            final float currentToolbarTrans = ViewCompat.getTranslationY(getActionbarToolbar());
+            final float currentPagerTrans = ViewCompat.getTranslationY(mPagerHeader);
+            final float nextToolbarY = currentToolbarTrans >= - 0.5 * mToolbarHeight ? 0 : - mToolbarHeight;
+            final float nextPagerY = nextToolbarY + mToolbarHeight + mTabs.getHeight() - mPagerHeaderHeight;
+
+            LogHelper.d("currentToolbarTrans", currentToolbarTrans + " | " + 0.5 * mToolbarHeight);
+
+            UIUtil.animate(mToolbarAnimator, new ValueAnimator.AnimatorUpdateListener() {
+                @Override
+                public void onAnimationUpdate(ValueAnimator animation) {
+                    float factor = (float) animation.getAnimatedValue();
+                    float nextTrans = factor * nextToolbarY + (1 - factor) * currentToolbarTrans;
+                    ViewCompat.setTranslationY(getActionbarToolbar(), nextTrans);
+
+                    float nextPagerTrans = factor * nextPagerY + (1 - factor) * currentPagerTrans;
+                    ViewCompat.setTranslationY(mPagerHeader, nextPagerTrans);
+                }
+            }, null);
+        }
     }
 
     private class ViewPagerAdapter extends SmartFragmentStatePagerAdapter {
