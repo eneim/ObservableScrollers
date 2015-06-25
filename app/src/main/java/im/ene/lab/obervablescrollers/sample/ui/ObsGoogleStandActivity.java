@@ -1,6 +1,5 @@
 package im.ene.lab.obervablescrollers.sample.ui;
 
-import android.animation.Animator;
 import android.animation.ValueAnimator;
 import android.annotation.TargetApi;
 import android.graphics.drawable.ColorDrawable;
@@ -12,6 +11,7 @@ import android.support.v4.view.ViewCompat;
 import android.support.v4.view.ViewPager;
 import android.util.TypedValue;
 import android.view.View;
+import android.view.ViewTreeObserver;
 
 import com.astuetz.PagerSlidingTabStrip;
 
@@ -58,12 +58,38 @@ public class ObsGoogleStandActivity extends BaseActivity implements OnScrollObse
     private ColorDrawable mStatusbarColorDrawable;
     private ColorDrawable mTransitionColorDrawable;
 
+    // properly get tabview height
+    private ViewTreeObserver.OnGlobalLayoutListener tabViewGlobalLayoutListener = new ViewTreeObserver.OnGlobalLayoutListener() {
+
+        @Override
+        public void onGlobalLayout() {
+            mBaseScrollMount = mPagerHeaderHeight - mToolbarHeight - mTabs.getHeight();
+
+            if (Build.VERSION.SDK_INT < Build.VERSION_CODES.JELLY_BEAN) {
+                removeGlobalLayoutListenerPreJB();
+            } else {
+                removeGlobalLayoutListenerJB();
+            }
+        }
+
+        @SuppressWarnings("deprecation")
+        private void removeGlobalLayoutListenerPreJB() {
+            mTabs.getViewTreeObserver().removeGlobalOnLayoutListener(this);
+        }
+
+        @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
+        private void removeGlobalLayoutListenerJB() {
+            mTabs.getViewTreeObserver().removeOnGlobalLayoutListener(this);
+        }
+    };
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_obs_google_stand);
-        getActionbarToolbar();
+        ButterKnife.inject(this);
 
+        getActionbarToolbar();
         if (getSupportActionBar() != null) {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
             getSupportActionBar().setHomeButtonEnabled(true);
@@ -84,18 +110,12 @@ public class ObsGoogleStandActivity extends BaseActivity implements OnScrollObse
         mNormalStatusBarColor = mThemedStatusBarColor;
 
         mTransitionColorDrawable = mToolbarColorDrawable;
-
-    }
-
-    @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
-    private void setToolbarAlpha(float alpha) {
-        UIUtil.setAlphaAnimation(mTransitionColorDrawable, (int) (alpha * 255), mPagerHeader);
     }
 
     @Override
     protected void onPostCreate(Bundle savedInstanceState) {
         super.onPostCreate(savedInstanceState);
-        ButterKnife.inject(this);
+        mTabs.getViewTreeObserver().addOnGlobalLayoutListener(tabViewGlobalLayoutListener);
 
         mTitles = getResources().getStringArray(R.array.item_titles);
         final ViewPagerAdapter mAdapter = new ViewPagerAdapter(getSupportFragmentManager(), mTitles);
@@ -144,15 +164,22 @@ public class ObsGoogleStandActivity extends BaseActivity implements OnScrollObse
         });
     }
 
+    private float mBaseScrollMount;
+
     private ValueAnimator mToolbarAnimator, mHeaderAnimator, mTabAnimator;
 
     @Override
     public void onScrollChanged(Scrollable scroller, int dx, int dy) {
         float scrollY = scroller.getVerticalScrollOffset();
         float pagerVerticalChange = ViewCompat.getTranslationY(mPagerHeader);
-
         float pagerHeaderTransition = Math.min(0, Math.max(-mPagerHeaderHeight, pagerVerticalChange - dy));
+
+        if (scrollY > mBaseScrollMount)
+            pagerHeaderTransition = Math.min(pagerHeaderTransition, -mBaseScrollMount);
+
+        LogHelper.d("pager", pagerHeaderTransition + " | " + pagerVerticalChange + " | " + scrollY);
         ViewCompat.setTranslationY(mPagerHeader, pagerHeaderTransition);
+        // Math.max(-A,
 
         mCurrentScrollY = (int) scrollY;
         float headerImageParallax = Math.min(0, Math.max(-mMainHeaderHeight, -scrollY / 2));
@@ -161,61 +188,55 @@ public class ObsGoogleStandActivity extends BaseActivity implements OnScrollObse
         float categoryIconAlpha = Math.min(1, Math.max(0, (scrollY * 2) / mPagerHeaderHeight));
         ViewCompat.setAlpha(mThumbNail, 1.0f - categoryIconAlpha);
 
-        // mPagerHeaderHeight - mToolbarHeight - mTabs.getHeight <= scrollY
-        // Math.min(0, scrollY - (mPagerHeaderHeight - mToolbarHeight - mTabs.getHeight))
-
-        //  Math.max(-mToolbarHeight - mTabs.getHeight(), currentY - dy) < 0
-        //  but
-        //  transition + mPagerHeaderHeight - mToolbarHeight - mTabs.getHeight() > 0 --> 0
         float toolbarTransition = Math.min(
                 0,
                 Math.max(
                         -mToolbarHeight - mTabs.getHeight(),
-                        pagerHeaderTransition + mPagerHeaderHeight - mToolbarHeight - mTabs.getHeight()
+                        pagerHeaderTransition + mBaseScrollMount
                 )
         );
 
         ViewCompat.setTranslationY(getActionbarToolbar(), Math.max(pagerHeaderTransition, toolbarTransition));
 
-        if ((mPagerHeaderHeight - pagerVerticalChange) <= mToolbarHeight + mTabs.getHeight()) {
-
-            final int oldPaddingLeft = mTabs.getPaddingLeft();
-            final int oldPaddingRight = mTabs.getPaddingRight();
-
-            if (oldPaddingLeft == mTabs.getTabPaddingLeftRight() && oldPaddingRight == mTabs.getTabPaddingLeftRight()) {
-                return;
-            }
-
-            UIUtil.animate(mTabAnimator,
-                    new ValueAnimator.AnimatorUpdateListener() {
-                        @Override
-                        public void onAnimationUpdate(ValueAnimator animation) {
-                            float factor = (float) animation.getAnimatedValue();
-                            int tempPaddingLeft = (int) (factor * mTabs.getTabPaddingLeftRight() + (1 - factor) * oldPaddingLeft);
-                            int tempPaddingRight = (int) (factor * mTabs.getTabPaddingLeftRight() + (1 - factor) * oldPaddingRight);
-                            mTabs.setPadding(tempPaddingLeft, mTabs.getPaddingTop(), tempPaddingRight, mTabs.getPaddingBottom());
-                        }
-                    }, new UIUtil.AnimatorEndListener() {
-                        @Override
-                        public void end(Animator animator) {
-                            mTabs.setPaddingMiddle(false);
-                            mTabs.scrollToChild(mViewPager.getCurrentItem(), 0);
-                        }
-                    });
-        } else {
-            if (!mTabs.isPaddingMiddle()) {
-                UIUtil.setPaddingAnimation(
-                        mTabs,
-                        mTabs.getPaddingLeftOnMiddle(), mTabs.getPaddingRightOnMiddle(),
-                        new UIUtil.AnimatorEndListener() {
-                            @Override
-                            public void end(Animator animator) {
-                                mTabs.setPaddingMiddle(true);
-                                mTabs.scrollToChild(mViewPager.getCurrentItem(), mTabs.getPaddingLeftOnMiddle());
-                            }
-                        });
-            }
-        }
+//        if ((mPagerHeaderHeight - pagerVerticalChange) <= mToolbarHeight + mTabs.getHeight()) {
+//
+//            final int oldPaddingLeft = mTabs.getPaddingLeft();
+//            final int oldPaddingRight = mTabs.getPaddingRight();
+//
+//            if (oldPaddingLeft == mTabs.getTabPaddingLeftRight() && oldPaddingRight == mTabs.getTabPaddingLeftRight()) {
+//                return;
+//            }
+//
+//            UIUtil.animate(mTabAnimator,
+//                    new ValueAnimator.AnimatorUpdateListener() {
+//                        @Override
+//                        public void onAnimationUpdate(ValueAnimator animation) {
+//                            float factor = (float) animation.getAnimatedValue();
+//                            int tempPaddingLeft = (int) (factor * mTabs.getTabPaddingLeftRight() + (1 - factor) * oldPaddingLeft);
+//                            int tempPaddingRight = (int) (factor * mTabs.getTabPaddingLeftRight() + (1 - factor) * oldPaddingRight);
+//                            mTabs.setPadding(tempPaddingLeft, mTabs.getPaddingTop(), tempPaddingRight, mTabs.getPaddingBottom());
+//                        }
+//                    }, new UIUtil.AnimatorEndListener() {
+//                        @Override
+//                        public void end(Animator animator) {
+//                            mTabs.setPaddingMiddle(false);
+//                            mTabs.scrollToChild(mViewPager.getCurrentItem(), 0);
+//                        }
+//                    });
+//        } else {
+//            if (!mTabs.isPaddingMiddle()) {
+//                UIUtil.setPaddingAnimation(
+//                        mTabs,
+//                        mTabs.getPaddingLeftOnMiddle(), mTabs.getPaddingRightOnMiddle(),
+//                        new UIUtil.AnimatorEndListener() {
+//                            @Override
+//                            public void end(Animator animator) {
+//                                mTabs.setPaddingMiddle(true);
+//                                mTabs.scrollToChild(mViewPager.getCurrentItem(), mTabs.getPaddingLeftOnMiddle());
+//                            }
+//                        });
+//            }
+//        }
 
     }
 
@@ -227,10 +248,8 @@ public class ObsGoogleStandActivity extends BaseActivity implements OnScrollObse
         if (!isToolbarFullyHiddenOrShown()) {
             final float currentToolbarTrans = ViewCompat.getTranslationY(getActionbarToolbar());
             final float currentPagerTrans = ViewCompat.getTranslationY(mPagerHeader);
-            final float nextToolbarY = currentToolbarTrans >= - 0.5 * mToolbarHeight ? 0 : - mToolbarHeight;
+            final float nextToolbarY = currentToolbarTrans >= -0.5 * mToolbarHeight ? 0 : -mToolbarHeight;
             final float nextPagerY = nextToolbarY + mToolbarHeight + mTabs.getHeight() - mPagerHeaderHeight;
-
-            LogHelper.d("currentToolbarTrans", currentToolbarTrans + " | " + 0.5 * mToolbarHeight);
 
             UIUtil.animate(mToolbarAnimator, new ValueAnimator.AnimatorUpdateListener() {
                 @Override
