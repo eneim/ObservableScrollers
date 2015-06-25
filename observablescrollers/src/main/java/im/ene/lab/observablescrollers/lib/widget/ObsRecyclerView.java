@@ -1,7 +1,6 @@
 package im.ene.lab.observablescrollers.lib.widget;
 
 import android.content.Context;
-import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.AttributeSet;
 
@@ -15,8 +14,6 @@ import im.ene.lab.observablescrollers.lib.util.Scrollable;
 public class ObsRecyclerView extends RecyclerView implements Scrollable {
 
     private static final String TAG = LogHelper.createLogTag(ObsRecyclerView.class);
-
-    private LinearLayoutManager mLayoutManager;
 
     public ObsRecyclerView(Context context) {
         super(context);
@@ -101,15 +98,6 @@ public class ObsRecyclerView extends RecyclerView implements Scrollable {
 
             LogHelper.d(TAG, "last scroll state: " + mLastScrollState.getName());
         }
-    }
-
-    @Override
-    public void setLayoutManager(LayoutManager layout) {
-        if (!(layout instanceof LinearLayoutManager))
-            throw new IllegalArgumentException("this class must have a LinearLayoutManager");
-
-        mLayoutManager = (LinearLayoutManager) layout;
-        super.setLayoutManager(layout);
     }
 
     @Override

@@ -290,6 +290,8 @@ public class ObsGoogleStandActivity extends BaseActivity implements OnScrollObse
 //            else
 //                fragment = DummyScrollViewFragment.newInstance();
             fragment = DummyRecyclerViewFragment.newInstance();
+            ((DummyRecyclerViewFragment) fragment).fixScrollerPadding(0, mPagerHeaderHeight, 0, 0);
+
             return fragment;
         }
 

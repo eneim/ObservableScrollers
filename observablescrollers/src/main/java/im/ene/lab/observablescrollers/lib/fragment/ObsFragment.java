@@ -16,6 +16,8 @@ public abstract class ObsFragment extends Fragment {
 
     protected OnScrollObservedListener mOnScrollObservedListener;
 
+    protected final String EXTRA_PADDINGS = "PADDINGS";
+
     @Override
     public void onAttach(Activity activity) {
         super.onAttach(activity);
@@ -27,4 +29,5 @@ public abstract class ObsFragment extends Fragment {
 
     public abstract Scrollable getScrollable();
 
+    public abstract void fixScrollerPadding(int left, int top, int right, int bottom);
 }
