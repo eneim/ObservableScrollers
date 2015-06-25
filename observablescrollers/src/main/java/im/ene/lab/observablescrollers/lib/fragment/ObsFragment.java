@@ -29,5 +29,14 @@ public abstract class ObsFragment extends Fragment {
 
     public abstract Scrollable getScrollable();
 
-    public abstract void fixScrollerPadding(int left, int top, int right, int bottom);
+    /**
+     * Normally a scroller need to be fix its padding. In case you define your own padding, just ignore this
+     * @param left
+     * @param top
+     * @param right
+     * @param bottom
+     */
+    public void fixScrollerPadding(int left, int top, int right, int bottom) {
+
+    }
 }
