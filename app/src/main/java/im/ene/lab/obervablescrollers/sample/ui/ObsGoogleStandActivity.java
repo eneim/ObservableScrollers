@@ -166,6 +166,7 @@ public class ObsGoogleStandActivity extends BaseActivity implements OnScrollObse
 
     private float mBaseScrollMount;
 
+    // TODO fix usage of UIUtil.animate() method
     private ValueAnimator mToolbarAnimator, mHeaderAnimator, mTabAnimator;
 
     @Override
@@ -181,7 +182,6 @@ public class ObsGoogleStandActivity extends BaseActivity implements OnScrollObse
         ViewCompat.setTranslationY(mPagerHeader, pagerHeaderTransition);
         // Math.max(-A,
 
-        mCurrentScrollY = (int) scrollY;
         float headerImageParallax = Math.min(0, Math.max(-mMainHeaderHeight, -scrollY / 2));
         ViewCompat.setTranslationY(mMainHeader, headerImageParallax);
 
@@ -238,6 +238,7 @@ public class ObsGoogleStandActivity extends BaseActivity implements OnScrollObse
 //            }
 //        }
 
+        mCurrentScrollY = (int) scrollY;
     }
 
     @Override
@@ -248,8 +249,10 @@ public class ObsGoogleStandActivity extends BaseActivity implements OnScrollObse
         if (!isToolbarFullyHiddenOrShown()) {
             final float currentToolbarTrans = ViewCompat.getTranslationY(getActionbarToolbar());
             final float currentPagerTrans = ViewCompat.getTranslationY(mPagerHeader);
-            final float nextToolbarY = currentToolbarTrans >= -0.5 * mToolbarHeight ? 0 : -mToolbarHeight;
-            final float nextPagerY = nextToolbarY + mToolbarHeight + mTabs.getHeight() - mPagerHeaderHeight;
+            final float nextPagerY = scroller.getVerticalScrollOffset() > mPagerHeaderHeight ? -mPagerHeaderHeight : -mPagerHeaderHeight + mToolbarHeight + mTabs.getHeight();
+            final float nextToolbarY = nextPagerY + mBaseScrollMount;
+
+            // nextPagerY = currentToolbarTrans < -PagerHeaderHeight + mToolbarHeight ? -PagerHeaderHeight : -PagerHeaderHeight + mToolbarHeight + mTabs.getHeight();
 
             UIUtil.animate(mToolbarAnimator, new ValueAnimator.AnimatorUpdateListener() {
                 @Override
@@ -263,6 +266,12 @@ public class ObsGoogleStandActivity extends BaseActivity implements OnScrollObse
                 }
             }, null);
         }
+    }
+
+    @Override
+    protected boolean isToolbarFullyHiddenOrShown() {
+        return ViewCompat.getTranslationY(getActionbarToolbar()) >= 0 ||
+                ViewCompat.getTranslationY(getActionbarToolbar()) <= -mToolbarHeight - mTabs.getHeight();
     }
 
     private class ViewPagerAdapter extends SmartFragmentStatePagerAdapter {
