@@ -6,9 +6,7 @@ import android.animation.ObjectAnimator;
 import android.animation.TypeEvaluator;
 import android.animation.ValueAnimator;
 import android.annotation.TargetApi;
-import android.graphics.Bitmap;
 import android.graphics.drawable.ColorDrawable;
-import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -26,8 +24,6 @@ import android.widget.ImageView;
 
 import com.astuetz.PagerSlidingTabStrip;
 import com.bumptech.glide.Glide;
-import com.squareup.picasso.Picasso;
-import com.squareup.picasso.Target;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
@@ -185,33 +181,6 @@ public class ObsGoogleStandActivity extends BaseActivity implements OnScrollObse
             public void onPageSelected(int position) {
                 currentItemPosition = position;
                 mImagePager.setCurrentItem(position, true);
-
-                int imageIndex = position % mHeaderImageIds.length;
-                Picasso.with(ObsGoogleStandActivity.this)
-                        .load(mHeaderImageIds[imageIndex]).into(new Target() {
-                    @Override
-                    public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom from) {
-                        Palette.generateAsync(bitmap, 12, new Palette.PaletteAsyncListener() {
-                            @TargetApi(Build.VERSION_CODES.LOLLIPOP)
-                            @Override
-                            public void onGenerated(Palette palette) {
-//                                getActionbarToolbar().setBackgroundColor(palette.getVibrantSwatch().getRgb());
-                                EventBus.getDefault().post(palette);
-                            }
-                        });
-                    }
-
-                    @Override
-                    public void onBitmapFailed(Drawable errorDrawable) {
-
-                    }
-
-                    @Override
-                    public void onPrepareLoad(Drawable placeHolderDrawable) {
-
-                    }
-                });
-
             }
 
             @Override
@@ -233,22 +202,7 @@ public class ObsGoogleStandActivity extends BaseActivity implements OnScrollObse
 
     @TargetApi(Build.VERSION_CODES.LOLLIPOP)
     public void onEventMainThread(Palette palette) {
-        if (mPaletteAnimator != null)
-            mPaletteAnimator.cancel();
 
-        final int paletteColor = palette.getLightVibrantSwatch().getRgb();
-
-        mPaletteAnimator = ObjectAnimator.ofArgb(getActionbarToolbar(),
-                "backgroundColor",
-                mToolbarColorDrawable.getColor(), paletteColor).setDuration(200);
-        mPaletteAnimator.addListener(new UIUtil.AnimatorEndListener() {
-            @Override
-            public void end(Animator animator) {
-                mToolbarColorDrawable.setColor(paletteColor);
-            }
-        });
-
-        mPaletteAnimator.start();
     }
 
     @Override
