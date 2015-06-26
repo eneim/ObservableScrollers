@@ -1,23 +1,37 @@
 package im.ene.lab.obervablescrollers.sample.ui;
 
 import android.animation.Animator;
+import android.animation.ArgbEvaluator;
+import android.animation.ObjectAnimator;
+import android.animation.TypeEvaluator;
 import android.animation.ValueAnimator;
 import android.annotation.TargetApi;
+import android.graphics.Bitmap;
 import android.graphics.drawable.ColorDrawable;
+import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
+import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewCompat;
 import android.support.v4.view.ViewPager;
+import android.support.v7.graphics.Palette;
 import android.util.TypedValue;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
+import android.widget.ImageView;
 
 import com.astuetz.PagerSlidingTabStrip;
+import com.bumptech.glide.Glide;
+import com.squareup.picasso.Picasso;
+import com.squareup.picasso.Target;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
+import de.greenrobot.event.EventBus;
 import im.ene.lab.obervablescrollers.sample.R;
 import im.ene.lab.obervablescrollers.sample.fragment.DummyRecyclerViewFragment;
 import im.ene.lab.obervablescrollers.sample.util.UIUtil;
@@ -31,7 +45,10 @@ public class ObsGoogleStandActivity extends BaseActivity implements OnScrollObse
     @InjectView(R.id.tabs)
     PagerSlidingTabStrip mTabs;
     @InjectView(R.id.viewpager)
-    ViewPager mViewPager;
+    ViewPager mFragmentPager;
+    @InjectView(R.id.header_image_pager)
+    ViewPager mImagePager;
+
     @InjectView(R.id.main_header)
     View mMainHeader;
     @InjectView(R.id.pager_header)
@@ -83,6 +100,18 @@ public class ObsGoogleStandActivity extends BaseActivity implements OnScrollObse
     };
 
     @Override
+    protected void onStart() {
+        super.onStart();
+        EventBus.getDefault().register(this);
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        EventBus.getDefault().unregister(this);
+    }
+
+    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_obs_google_stand);
@@ -116,9 +145,11 @@ public class ObsGoogleStandActivity extends BaseActivity implements OnScrollObse
         super.onPostCreate(savedInstanceState);
         mTabs.getViewTreeObserver().addOnGlobalLayoutListener(tabViewGlobalLayoutListener);
 
+        mImagePager.setAdapter(new HeaderImagePagerAdapter());
+
         final ViewPagerAdapter mAdapter = new ViewPagerAdapter(getSupportFragmentManager(), mTitles);
-        mViewPager.setAdapter(mAdapter);
-        mTabs.setViewPager(mViewPager);
+        mFragmentPager.setAdapter(mAdapter);
+        mTabs.setViewPager(mFragmentPager);
         mTabs.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
 
             private int currentItemPosition = 0;
@@ -153,6 +184,34 @@ public class ObsGoogleStandActivity extends BaseActivity implements OnScrollObse
             @Override
             public void onPageSelected(int position) {
                 currentItemPosition = position;
+                mImagePager.setCurrentItem(position, true);
+
+                int imageIndex = position % mHeaderImageIds.length;
+                Picasso.with(ObsGoogleStandActivity.this)
+                        .load(mHeaderImageIds[imageIndex]).into(new Target() {
+                    @Override
+                    public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom from) {
+                        Palette.generateAsync(bitmap, 12, new Palette.PaletteAsyncListener() {
+                            @TargetApi(Build.VERSION_CODES.LOLLIPOP)
+                            @Override
+                            public void onGenerated(Palette palette) {
+//                                getActionbarToolbar().setBackgroundColor(palette.getVibrantSwatch().getRgb());
+                                EventBus.getDefault().post(palette);
+                            }
+                        });
+                    }
+
+                    @Override
+                    public void onBitmapFailed(Drawable errorDrawable) {
+
+                    }
+
+                    @Override
+                    public void onPrepareLoad(Drawable placeHolderDrawable) {
+
+                    }
+                });
+
             }
 
             @Override
@@ -167,6 +226,30 @@ public class ObsGoogleStandActivity extends BaseActivity implements OnScrollObse
 
     // TODO fix usage of UIUtil.animate() method
     private ValueAnimator mToolbarAnimator, mHeaderAnimator, mTabAnimator, mColorAnimator;
+
+    private ObjectAnimator mPaletteAnimator;
+
+    private static final TypeEvaluator ARGB_EVALUATOR = new ArgbEvaluator();
+
+    @TargetApi(Build.VERSION_CODES.LOLLIPOP)
+    public void onEventMainThread(Palette palette) {
+        if (mPaletteAnimator != null)
+            mPaletteAnimator.cancel();
+
+        final int paletteColor = palette.getLightVibrantSwatch().getRgb();
+
+        mPaletteAnimator = ObjectAnimator.ofArgb(getActionbarToolbar(),
+                "backgroundColor",
+                mToolbarColorDrawable.getColor(), paletteColor).setDuration(200);
+        mPaletteAnimator.addListener(new UIUtil.AnimatorEndListener() {
+            @Override
+            public void end(Animator animator) {
+                mToolbarColorDrawable.setColor(paletteColor);
+            }
+        });
+
+        mPaletteAnimator.start();
+    }
 
     @Override
     public void onScrollChanged(Scrollable scroller, int dx, int dy) {
@@ -216,7 +299,7 @@ public class ObsGoogleStandActivity extends BaseActivity implements OnScrollObse
 //                        @Override
 //                        public void end(Animator animator) {
 //                            mTabs.setPaddingMiddle(false);
-//                            mTabs.scrollToChild(mViewPager.getCurrentItem(), 0);
+//                            mTabs.scrollToChild(mFragmentPager.getCurrentItem(), 0);
 //                        }
 //                    });
 //        } else {
@@ -228,7 +311,7 @@ public class ObsGoogleStandActivity extends BaseActivity implements OnScrollObse
 //                            @Override
 //                            public void end(Animator animator) {
 //                                mTabs.setPaddingMiddle(true);
-//                                mTabs.scrollToChild(mViewPager.getCurrentItem(), mTabs.getPaddingLeftOnMiddle());
+//                                mTabs.scrollToChild(mFragmentPager.getCurrentItem(), mTabs.getPaddingLeftOnMiddle());
 //                            }
 //                        });
 //            }
@@ -320,6 +403,46 @@ public class ObsGoogleStandActivity extends BaseActivity implements OnScrollObse
         @Override
         public CharSequence getPageTitle(int position) {
             return titles[position];
+        }
+    }
+
+    private int[] mHeaderImageIds = {
+            R.drawable.bg_01,
+            R.drawable.bg_02,
+            R.drawable.bg_03,
+            R.drawable.bg_04,
+            R.drawable.bg_05
+    };
+
+    private class HeaderImagePagerAdapter extends PagerAdapter {
+
+        @Override
+        public int getCount() {
+            return mTitles.length;
+        }
+
+        @Override
+        public boolean isViewFromObject(View view, Object object) {
+            return view.equals(object);
+        }
+
+        @Override
+        public Object instantiateItem(ViewGroup container, int position) {
+            ImageView imageView = (ImageView) LayoutInflater.from(container.getContext())
+                    .inflate(R.layout.header_image_view, container, false);
+            Glide.with(ObsGoogleStandActivity.this)
+                    .load(mHeaderImageIds[position % mHeaderImageIds.length])
+                    .into(imageView);
+            container.addView(imageView);
+            return imageView;
+        }
+
+        @Override
+        public void destroyItem(ViewGroup container, int position, Object object) {
+            if (object instanceof ImageView) {
+                container.removeView((ImageView) object);
+            } else
+                super.destroyItem(container, position, object);
         }
     }
 }

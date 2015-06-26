@@ -14,7 +14,13 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:scaleType="centerCrop"
+            android:visibility="gone"
             android:src="@drawable/example" />
+
+        <android.support.v4.view.ViewPager
+            android:id="@+id/header_image_pager"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"/>
 
         <View
             android:layout_width="match_parent"
