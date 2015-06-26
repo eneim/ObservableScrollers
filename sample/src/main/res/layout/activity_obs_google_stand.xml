@@ -39,7 +39,7 @@
             android:layout_width="match_parent"
             android:layout_height="@dimen/google_play_header_middle"
             android:layout_gravity="top"
-            android:background="?attr/colorPrimary">
+            android:background="@android:color/transparent">
 
             <ImageView
                 android:id="@+id/header_thumbnail"
@@ -53,7 +53,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="48dp"
                 android:layout_alignParentBottom="true"
-                android:background="?attr/colorAccent"
+                android:background="@android:color/transparent"
                 android:paddingLeft="24dp"
                 android:paddingRight="24dp"
                 app:pstsDividerColor="@android:color/transparent"

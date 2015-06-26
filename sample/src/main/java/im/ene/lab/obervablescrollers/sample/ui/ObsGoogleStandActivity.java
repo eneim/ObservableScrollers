@@ -107,9 +107,7 @@ public class ObsGoogleStandActivity extends BaseActivity implements OnScrollObse
         mStatusbarColorDrawable = new ColorDrawable(mTypedValue.data);
         mThemedStatusBarColor = mStatusbarColorDrawable.getColor();
         mNormalStatusBarColor = mThemedStatusBarColor;
-
         mTransitionColorDrawable = mToolbarColorDrawable;
-
         mTitles = getResources().getStringArray(R.array.item_titles);
     }
 
@@ -168,7 +166,7 @@ public class ObsGoogleStandActivity extends BaseActivity implements OnScrollObse
     private float mBaseScrollMount;
 
     // TODO fix usage of UIUtil.animate() method
-    private ValueAnimator mToolbarAnimator, mHeaderAnimator, mTabAnimator;
+    private ValueAnimator mToolbarAnimator, mHeaderAnimator, mTabAnimator, mColorAnimator;
 
     @Override
     public void onScrollChanged(Scrollable scroller, int dx, int dy) {
@@ -266,6 +264,24 @@ public class ObsGoogleStandActivity extends BaseActivity implements OnScrollObse
                 }
             });
         }
+
+        // change tab bar background color
+        float colorAlphaFactor = ViewCompat.getTranslationY(mPagerHeader) + mBaseScrollMount <= 0 ? 1.0f : 0.0f;
+        if (mColorAnimator != null)
+            mColorAnimator.cancel();
+
+        mColorAnimator = ValueAnimator.ofFloat((float) mTransitionColorDrawable.getAlpha() / 255, colorAlphaFactor).setDuration(200);
+        mColorAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+            @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
+            @Override
+            public void onAnimationUpdate(ValueAnimator animation) {
+                float factor = (float) animation.getAnimatedValue();
+                mTransitionColorDrawable.setAlpha((int) (factor * 255));
+                mPagerHeader.setBackground(mTransitionColorDrawable);
+            }
+        });
+
+        mColorAnimator.start();
     }
 
     @Override
