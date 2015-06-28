@@ -4,6 +4,8 @@
  
 Easy to use observable scroller.
 
+***Minimum supported SDK version: 14*** 
+
 Include in build.gradle
 
 ```
