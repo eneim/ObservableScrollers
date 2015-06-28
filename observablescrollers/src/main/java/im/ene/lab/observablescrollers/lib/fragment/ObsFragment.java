@@ -27,6 +27,10 @@ public abstract class ObsFragment extends Fragment {
         mOnScrollObservedListener = (OnScrollObservedListener) activity;
     }
 
+    /**
+     *
+     * @return the curren scrollable of this fragment. for now only one scrollable instance is considered
+     */
     public abstract Scrollable getScrollable();
 
     /**

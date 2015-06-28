@@ -11,7 +11,12 @@ import im.ene.lab.observablescrollers.lib.util.Scrollable;
 
 /**
  * Created by eneim on 6/9/15.
+ *
+ * I'm not about to support these legacy classes.
+ * I expect the usage of new RecyclerView
  */
+
+@Deprecated
 public class ObsGridView extends GridView implements Scrollable {
     public ObsGridView(Context context) {
         super(context);

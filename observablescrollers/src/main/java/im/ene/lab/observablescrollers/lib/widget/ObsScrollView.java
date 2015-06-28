@@ -5,6 +5,7 @@ import android.content.Context;
 import android.os.Build;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
+import android.view.ViewTreeObserver;
 import android.widget.ScrollView;
 
 import im.ene.lab.observablescrollers.lib.util.LogHelper;
@@ -34,6 +35,12 @@ public class ObsScrollView extends ScrollView implements Scrollable {
 
     private ScrollState mExpectedScrollSate = ScrollState.SCROLL_STATE_IDLE;
 
+    private ViewTreeObserver.OnScrollChangedListener onScrollChangedListener = new ViewTreeObserver.OnScrollChangedListener() {
+        @Override
+        public void onScrollChanged() {
+
+        }
+    };
     /**
      * if user is touching to this view or not, set in ObsScrollView#onTouchEvent(MotionEvent ev);
      */
@@ -104,6 +111,18 @@ public class ObsScrollView extends ScrollView implements Scrollable {
     }
 
     @Override
+    protected void onAttachedToWindow() {
+        super.onAttachedToWindow();
+        getViewTreeObserver().addOnScrollChangedListener(onScrollChangedListener);
+    }
+
+    @Override
+    protected void onDetachedFromWindow() {
+        getViewTreeObserver().removeOnScrollChangedListener(onScrollChangedListener);
+        super.onDetachedFromWindow();
+    }
+
+    @Override
     protected void onScrollChanged(int l, int t, int old_l, int old_t) {
         super.onScrollChanged(l, t, old_l, old_t);
         mCurrentScrollY = t;
@@ -134,6 +153,8 @@ public class ObsScrollView extends ScrollView implements Scrollable {
         } else {
             if (diffY * diffY <= 4) {
                 mExpectedScrollSate = ScrollState.SCROLL_STATE_IDLE;
+            } else {
+                mExpectedScrollSate = ScrollState.SCROLL_STATE_FLING;
             }
         }
     }
@@ -165,7 +186,7 @@ public class ObsScrollView extends ScrollView implements Scrollable {
 
     @Override
     public int getVerticalScrollOffset() {
-        return mCurrentScrollY;
+        return super.computeVerticalScrollOffset();
     }
 
     @Override

@@ -15,7 +15,12 @@ import im.ene.lab.observablescrollers.lib.util.Scrollable;
 
 /**
  * Created by eneim on 6/5/15.
+ *
+ * I'm not about to support these legacy classes.
+ * I expect the usage of new RecyclerView
  */
+
+@Deprecated
 public class ObsListView extends ListView implements Scrollable {
     private static final String TAG = LogHelper.createLogTag(ObsListView.class);
     private static final int SMOOTHLY_SCROLL_DURATION = 200;
@@ -57,13 +62,14 @@ public class ObsListView extends ListView implements Scrollable {
     @Override
     protected void onAttachedToWindow() {
         super.onAttachedToWindow();
-        mScrollDetector = new InternalScrollListener(new InternalScrollListener.PixelScrollListener() {
+        mScrollDetector = new InternalScrollListener() {
             @Override
-            public void onScroll(AbsListView view, float deltaY, int scrollY) {
+            protected void onScroll(AbsListView view, float deltaY, int scrollY) {
+                super.onScroll(view, deltaY, scrollY);
                 diffY = -deltaY;    // to unify the scroll direction with other component, I take the inverse value;
                 mLastScrollY = scrollY;
             }
-        });
+        };
 
         setOnScrollListener(new OnScrollListener() {
             @Override

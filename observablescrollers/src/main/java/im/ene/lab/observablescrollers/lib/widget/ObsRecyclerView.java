@@ -47,11 +47,6 @@ public class ObsRecyclerView extends RecyclerView implements Scrollable {
     }
 
     @Override
-    public void addOnScrollListener(OnScrollListener listener) {
-        super.addOnScrollListener(listener);
-    }
-
-    @Override
     public void onScrolled(int dx, int dy) {
         super.onScrolled(dx, dy);
         diffY = dy;
@@ -95,8 +90,6 @@ public class ObsRecyclerView extends RecyclerView implements Scrollable {
             if (mScrollListener != null) {
                 mScrollListener.onScrollStateChanged(this, newState);
             }
-
-            LogHelper.d(TAG, "last scroll state: " + mLastScrollState.getName());
         }
     }
 

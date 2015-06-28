@@ -11,7 +11,6 @@ import android.widget.AbsListView;
  * http://stackoverflow.com/questions/8471075/android-listview-find-the-amount-of-pixels-scrolled
  */
 public class InternalScrollListener implements AbsListView.OnScrollListener {
-    private final PixelScrollListener listener;
 
     private SparseIntArray mChildHeights = new SparseIntArray();
 
@@ -20,10 +19,6 @@ public class InternalScrollListener implements AbsListView.OnScrollListener {
             new TrackElement(1), // mid view, bottom Y
             new TrackElement(2), // mid view, top Y
             new TrackElement(3)};// bottom view, top Y
-
-    public InternalScrollListener(PixelScrollListener listener) {
-        this.listener = listener;
-    }
 
     @Override
     public void onScrollStateChanged(AbsListView view, int scrollState) {
@@ -45,8 +40,7 @@ public class InternalScrollListener implements AbsListView.OnScrollListener {
             if (!wasTracked) {
                 if (t.isSafeToTrack(view)) {
                     wasTracked = true;
-                    if (listener != null)
-                        listener.onScroll(view, t.getDeltaY(), getVerticalScroll(view, firstVisibleItem));
+                    onScroll(view, t.getDeltaY(), getVerticalScroll(view, firstVisibleItem));
                     t.syncState(view);
                 } else {
                     t.reset();
@@ -57,6 +51,12 @@ public class InternalScrollListener implements AbsListView.OnScrollListener {
         }
     }
 
+    /**
+     *
+     * @param listView
+     * @param firstVisibleItem
+     * @param visibleItemCount
+     */
     private void updateChildHeights(AbsListView listView, int firstVisibleItem, int visibleItemCount) {
         // update heights list
         for (int i = 0; i < visibleItemCount; i++) {
@@ -79,8 +79,14 @@ public class InternalScrollListener implements AbsListView.OnScrollListener {
         return totalChildHeight - listView.getChildAt(0).getTop() + listView.getPaddingTop();
     }
 
-    public interface PixelScrollListener {
-        void onScroll(AbsListView view, float deltaY, int scrollY);
+    /**
+     *
+     * @param view
+     * @param deltaY
+     * @param scrollY
+     */
+    protected void onScroll(AbsListView view, float deltaY, int scrollY) {
+
     }
 
     private class TrackElement {

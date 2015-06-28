@@ -135,15 +135,13 @@ public class UIUtil {
         animator.start();
     }
 
-    public static void animate(ValueAnimator animator, ValueAnimator.AnimatorUpdateListener updateListener, AnimatorEndListener listener) {
-        if (animator != null)
-            animator.cancel();
-        animator = ValueAnimator.ofFloat(0.0f, 1.0f).setDuration(200);
+    public static ValueAnimator createAnimator(ValueAnimator.AnimatorUpdateListener updateListener, AnimatorEndListener listener) {
+        ValueAnimator animator = ValueAnimator.ofFloat(0.0f, 1.0f).setDuration(200);
         if (updateListener != null)
             animator.addUpdateListener(updateListener);
         if (listener != null)
             animator.addListener(listener);
-        animator.start();
+        return animator;
     }
 
     public static abstract class AnimatorEndListener implements Animator.AnimatorListener {

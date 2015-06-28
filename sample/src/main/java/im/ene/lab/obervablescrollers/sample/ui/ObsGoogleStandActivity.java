@@ -1,6 +1,5 @@
 package im.ene.lab.obervablescrollers.sample.ui;
 
-import android.animation.Animator;
 import android.animation.ArgbEvaluator;
 import android.animation.ObjectAnimator;
 import android.animation.TypeEvaluator;
@@ -30,9 +29,11 @@ import butterknife.InjectView;
 import de.greenrobot.event.EventBus;
 import im.ene.lab.obervablescrollers.sample.R;
 import im.ene.lab.obervablescrollers.sample.fragment.DummyRecyclerViewFragment;
+import im.ene.lab.obervablescrollers.sample.fragment.DummyScrollViewFragment;
 import im.ene.lab.obervablescrollers.sample.util.UIUtil;
 import im.ene.lab.observablescrollers.lib.adapter.SmartFragmentStatePagerAdapter;
 import im.ene.lab.observablescrollers.lib.fragment.ObsFragment;
+import im.ene.lab.observablescrollers.lib.util.LogHelper;
 import im.ene.lab.observablescrollers.lib.util.OnScrollObservedListener;
 import im.ene.lab.observablescrollers.lib.util.Scrollable;
 
@@ -193,7 +194,7 @@ public class ObsGoogleStandActivity extends BaseActivity implements OnScrollObse
 
     private float mBaseScrollMount;
 
-    // TODO fix usage of UIUtil.animate() method
+    // TODO fix usage of UIUtil.createAnimator() method
     private ValueAnimator mToolbarAnimator, mHeaderAnimator, mTabAnimator, mColorAnimator;
 
     private ObjectAnimator mPaletteAnimator;
@@ -210,6 +211,7 @@ public class ObsGoogleStandActivity extends BaseActivity implements OnScrollObse
         float scrollY = scroller.getVerticalScrollOffset();
         float pagerVerticalChange = ViewCompat.getTranslationY(mPagerHeader);
 
+        LogHelper.d("scroller", dy + " | " + scrollY);
         float pagerHeaderTransition = Math.min(0, Math.max(-mPagerHeaderHeight, pagerVerticalChange - dy));
         if (scrollY > mBaseScrollMount)
             pagerHeaderTransition = Math.min(pagerHeaderTransition, -mBaseScrollMount);
@@ -240,7 +242,7 @@ public class ObsGoogleStandActivity extends BaseActivity implements OnScrollObse
 //                return;
 //            }
 //
-//            UIUtil.animate(mTabAnimator,
+//            UIUtil.createAnimator(mTabAnimator,
 //                    new ValueAnimator.AnimatorUpdateListener() {
 //                        @Override
 //                        public void onAnimationUpdate(ValueAnimator animation) {
@@ -284,7 +286,11 @@ public class ObsGoogleStandActivity extends BaseActivity implements OnScrollObse
             final float currentPagerTrans = ViewCompat.getTranslationY(mPagerHeader);
             final float nextPagerY = scroller.getVerticalScrollOffset() > mPagerHeaderHeight ? -mPagerHeaderHeight : -mPagerHeaderHeight + mToolbarHeight + mTabs.getHeight();
             final float nextToolbarY = nextPagerY + mBaseScrollMount;
-            UIUtil.animate(mToolbarAnimator, new ValueAnimator.AnimatorUpdateListener() {
+
+            if (mToolbarAnimator != null)
+                mToolbarAnimator.cancel();
+
+            mToolbarAnimator = UIUtil.createAnimator(new ValueAnimator.AnimatorUpdateListener() {
                 @Override
                 public void onAnimationUpdate(ValueAnimator animation) {
                     float factor = (float) animation.getAnimatedValue();
@@ -295,11 +301,8 @@ public class ObsGoogleStandActivity extends BaseActivity implements OnScrollObse
                     float nextPagerTrans = factor * nextPagerY + (1 - factor) * currentPagerTrans;
                     ViewCompat.setTranslationY(mPagerHeader, nextPagerTrans);
                 }
-            }, new UIUtil.AnimatorEndListener() {
-                @Override
-                public void end(Animator animator) {
-                }
-            });
+            }, null);
+            mToolbarAnimator.start();
         }
 
         // change tab bar background color
@@ -339,12 +342,12 @@ public class ObsGoogleStandActivity extends BaseActivity implements OnScrollObse
         @Override
         public Fragment getItem(int position) {
             Fragment fragment;
-//            if (position % 2 == 0)
-//                fragment = DummyRecyclerViewFragment.newInstance();
-//            else
-//                fragment = DummyScrollViewFragment.newInstance();
-            fragment = DummyRecyclerViewFragment.newInstance();
-            ((DummyRecyclerViewFragment) fragment).fixScrollerPadding(0, mPagerHeaderHeight, 0, 0);
+            if (position % 2 == 0)
+                fragment = DummyRecyclerViewFragment.newInstance();
+            else
+                fragment = DummyScrollViewFragment.newInstance();
+//            fragment = DummyRecyclerViewFragment.newInstance();
+            ((ObsFragment) fragment).fixScrollerPadding(0, mPagerHeaderHeight, 0, 0);
 
             return fragment;
         }
