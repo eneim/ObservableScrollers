@@ -7,9 +7,13 @@ Easy to use observable scroller.
 Include in build.gradle
 
 ```
-compile 'im.ene:observablescrollers:0.0.3@aar'
+compile 'im.ene:observablescrollers:0.0.4@aar'
 ```
 # Changelog
+
+- 0.0.4 (2015 June 28th)
+
+Set deprecated for ObsListView and ObsGridView (un implemented already). I will spend time for RecyclerView and ScrollView only.
 
 - 0.0.3 (2015 June 22nd)
 
