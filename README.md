@@ -13,6 +13,10 @@ compile 'im.ene:observablescrollers:0.0.4@aar'
 ```
 # Changelog
 
+- 0.0.5 (2015 July 2nd)
+
+Minor fixes. Bintray fix as last release didn't include proper source and javadoc.
+
 - 0.0.4 (2015 June 28th)
 
 Set deprecated for ObsListView and ObsGridView (un implemented already). I will spend time for RecyclerView and ScrollView only.
