@@ -9,7 +9,7 @@ Easy to use observable scroller.
 Include in build.gradle
 
 ```
-compile 'im.ene:observablescrollers:0.0.4@aar'
+compile 'im.ene:observablescrollers:0.0.5@aar'
 ```
 # Changelog
 
